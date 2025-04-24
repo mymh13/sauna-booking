@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaunaBookingApi", "api\SaunaBookingApi.csproj", "{98A014BE-EF7E-4CA0-2831-ED6B1611EAC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "client", "client\client.csproj", "{AE7EEA74-2FE0-136F-D797-854FD87E022A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{98A014BE-EF7E-4CA0-2831-ED6B1611EAC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98A014BE-EF7E-4CA0-2831-ED6B1611EAC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98A014BE-EF7E-4CA0-2831-ED6B1611EAC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98A014BE-EF7E-4CA0-2831-ED6B1611EAC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE7EEA74-2FE0-136F-D797-854FD87E022A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE7EEA74-2FE0-136F-D797-854FD87E022A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE7EEA74-2FE0-136F-D797-854FD87E022A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE7EEA74-2FE0-136F-D797-854FD87E022A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {708FC4DA-2898-40D0-8E56-098503EA2434}
+	EndGlobalSection
+EndGlobal
