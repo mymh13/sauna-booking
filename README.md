@@ -6,7 +6,7 @@ sauna-booking/                      ← GitHub root
 ├── .gitignore
 ├── LICENSE
 ├── README.md                       ← this file
-├── api/                            ← the .NET backend API
+├── api/                            ← the .NET "backend" API
 │   ├── SaunaBookingApi.csproj
 │   ├── Program.cs
 │   ├── appsettings*.json

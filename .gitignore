@@ -3,6 +3,24 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Production specific files
+/bin
+/obj
+/api/bin
+/api/obj
+/client/bin
+/client/obj
+*.db
+appsettings.*.json
+/api/appsettings.*.json
+/client/appsettings.*.json
+*.env
+/api/*.env
+/client/*.env
+/scripts/*.sh
+!scripts/deploy_api.sh
+!scripts/deploy_client.sh
+
 # User-specific files
 *.rsuser
 *.suo
