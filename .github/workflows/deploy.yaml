@@ -28,7 +28,7 @@ jobs:
 
     - name: Deploy to Hetzner via rsync
       run: |
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./publish/ saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/api/
+        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./publish/ saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/api/
 
     - name: (Optional) Restart API via SSH
       run: |
