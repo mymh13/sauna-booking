@@ -38,7 +38,7 @@ jobs:
     - name: Prepare Caddyfile
       run: |
         mkdir -p ./deploy
-        sed "s|\${BACKEND_PORT}|${{ secrets.HETZNER_API_PORT }}|g" ./scripts/Caddyfile.template > ./deploy/Caddyfile
+        sed 's|${BACKEND_PORT}|${{ secrets.HETZNER_API_PORT }}|g' ./scripts/Caddyfile.template > ./deploy/Caddyfile
 
     # Conditionally sync and reload Caddyfile
     - name: Conditionally sync and reload Caddyfile
