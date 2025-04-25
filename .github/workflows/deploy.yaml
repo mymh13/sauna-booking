@@ -34,29 +34,6 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.HETZNER_DEPLOY_KEY }}
 
-    # Prepare Caddyfile dynamically
-    - name: Prepare Caddyfile
-      run: |
-        mkdir -p ./deploy
-        sed 's|${BACKEND_PORT}|${{ secrets.HETZNER_API_PORT }}|g' ./scripts/Caddyfile.template > ./deploy/Caddyfile
-
-    # Conditionally sync and reload Caddyfile
-    - name: Conditionally sync and reload Caddyfile
-      run: |
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./deploy/Caddyfile saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/Caddyfile.new
-
-      # Run comparison and reload logic directly on the remote VM using a HEREDOC
-        ssh -o StrictHostKeyChecking=no saunadeploy@${{ secrets.HETZNER_HOST }} /bin/bash <<'EOF'
-          if ! cmp -s /home/saunadeploy/Caddyfile.new /etc/caddy/Caddyfile; then
-            echo "Caddyfile changed — applying update..."
-            sudo mv /home/saunadeploy/Caddyfile.new /etc/caddy/Caddyfile
-            sudo systemctl reload caddy
-          else
-            echo "Caddyfile is unchanged — skipping reload."
-            rm /home/saunadeploy/Caddyfile.new
-          fi
-    EOF
-
     # Deploy API via rsync to Cloud API host
     - name: Deploy API to Cloud API host
       run: |
