@@ -43,20 +43,19 @@ jobs:
     # Conditionally sync and reload Caddyfile
     - name: Conditionally sync and reload Caddyfile
       run: |
-        # Upload as temporary file first
         rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./deploy/Caddyfile saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/Caddyfile.new
 
-      # Connect and compare before replacing
-        ssh -o StrictHostKeyChecking=no saunadeploy@${{ secrets.HETZNER_HOST }} << 'EOF'
+      # Run comparison and reload logic directly on the remote VM using a HEREDOC
+        ssh -o StrictHostKeyChecking=no saunadeploy@${{ secrets.HETZNER_HOST }} /bin/bash <<'EOF'
           if ! cmp -s /home/saunadeploy/Caddyfile.new /etc/caddy/Caddyfile; then
-            echo "🔄 Caddyfile changed — applying update..."
+            echo "Caddyfile changed — applying update..."
             sudo mv /home/saunadeploy/Caddyfile.new /etc/caddy/Caddyfile
             sudo systemctl reload caddy
           else
-            echo "✅ Caddyfile is unchanged — skipping reload."
+            echo "Caddyfile is unchanged — skipping reload."
             rm /home/saunadeploy/Caddyfile.new
           fi
-        EOF
+    EOF
 
     # Deploy API via rsync to Hetzner
     - name: Deploy API to Hetzner
