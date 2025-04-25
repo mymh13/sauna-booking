@@ -1,4 +1,4 @@
-name: Deploy API to Hetzner
+name: Deploy Backend and Frontend
 
 on:
   push:
@@ -10,29 +10,69 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    # Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
 
+    # Setup .NET SDK
     - name: Set up .NET 9 SDK
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
 
+    ########################
+    # BACKEND DEPLOYMENT
+    ########################
+
+    # Publish the .NET API
     - name: Publish API
       run: dotnet publish ./api/SaunaBookingApi.csproj -c Release -o ./publish
 
-    - name: Add SSH key
+    # Add SSH key for Hetzner
+    - name: Add SSH key for Hetzner
       uses: webfactory/ssh-agent@v0.9.0
       with:
         ssh-private-key: ${{ secrets.HETZNER_DEPLOY_KEY }}
 
-    - name: Deploy to Hetzner via rsync
+    # Deploy API via rsync to Hetzner
+    - name: Deploy API to Hetzner
       run: |
         rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./publish/ saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/api/
 
-    - name: (Optional) Restart API via SSH
+    ########################
+    # FRONTEND DEPLOYMENT
+    ########################
+
+    # Clean old publish output
+    - name: Clean previous frontend publish
+      run: rm -rf ./client_publish
+
+    # Publish Blazor WASM frontend
+    - name: Publish Client
+      run: dotnet publish ./client/client.csproj -c Release -o ./client_publish
+
+    # Install lftp if not already installed
+    - name: Install lftp if missing
+      run: |
+        if ! command -v lftp &> /dev/null; then
+          sudo apt-get update && sudo apt-get install -y lftp
+        fi
+
+    # Upload frontend to Loopia FTP (note: public_html is FTP root)
+    - name: Upload frontend to Loopia FTP
+      run: |
+        lftp -c "
+          open -u ${{ secrets.LOOPIA_FTP_USER }},${{ secrets.LOOPIA_FTP_PASS }} ${{ secrets.LOOPIA_FTP_HOST }};
+          mirror -R ./client_publish/wwwroot public_html/sauna;
+          quit"
+
+    ########################
+    # FINALIZE
+    ########################
+
+    # (Optional) Restart message
+    - name: Restart API via SSH
       run: |
         ssh -o StrictHostKeyChecking=no saunadeploy@${{ secrets.HETZNER_HOST }} << 'EOF'
-          # You can later replace this with: sudo systemctl restart sauna-api
           echo "Deploy complete on $(hostname) at $(date)"
         EOF
