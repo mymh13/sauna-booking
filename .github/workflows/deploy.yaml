@@ -63,7 +63,7 @@ jobs:
       run: |
         lftp -c "
           open -u ${{ secrets.LOOPIA_FTP_USER }},${{ secrets.LOOPIA_FTP_PASS }} ${{ secrets.LOOPIA_FTP_HOST }};
-          mirror -R ./client_publish/wwwroot public_html/sauna;
+          mirror -R ./client_publish/wwwroot mymh.dev/public_html/sauna;
           quit"
 
     ########################
