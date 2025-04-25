@@ -40,13 +40,22 @@ jobs:
         mkdir -p ./deploy
         sed "s|\${BACKEND_PORT}|${{ secrets.HETZNER_API_PORT }}|g" ./scripts/Caddyfile.template > ./deploy/Caddyfile
 
-    # Sync and reload Caddyfile
-    - name: Sync and reload Caddyfile
+    # Conditionally sync and reload Caddyfile
+    - name: Conditionally sync and reload Caddyfile
       run: |
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./deploy/Caddyfile saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/Caddyfile
+        # Upload as temporary file first
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./deploy/Caddyfile saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/Caddyfile.new
+
+      # Connect and compare before replacing
         ssh -o StrictHostKeyChecking=no saunadeploy@${{ secrets.HETZNER_HOST }} << 'EOF'
-          sudo mv /home/saunadeploy/Caddyfile /etc/caddy/Caddyfile
-          sudo systemctl reload caddy
+          if ! cmp -s /home/saunadeploy/Caddyfile.new /etc/caddy/Caddyfile; then
+            echo "🔄 Caddyfile changed — applying update..."
+            sudo mv /home/saunadeploy/Caddyfile.new /etc/caddy/Caddyfile
+            sudo systemctl reload caddy
+          else
+            echo "✅ Caddyfile is unchanged — skipping reload."
+            rm /home/saunadeploy/Caddyfile.new
+          fi
         EOF
 
     # Deploy API via rsync to Hetzner
