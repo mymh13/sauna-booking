@@ -49,7 +49,7 @@ jobs:
 
     # Publish Blazor WASM frontend
     - name: Publish Client
-      run: dotnet publish ./client/client.csproj -c Release -o ./client_publish
+      run: dotnet publish ./client/client.csproj -c Release -o ./client_publish /p:BaseHref="/sauna/"
 
     # Install lftp if not already installed
     - name: Install lftp if missing
