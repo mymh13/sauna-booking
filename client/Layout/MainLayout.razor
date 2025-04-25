@@ -1,31 +1,56 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page @themeClass">
-    <header>
-        <div class="navbar">
-            <div class="site-title">Dyviksudds Bastuflotte</div>
-            <button class="theme-toggle" @onclick="ToggleTheme">
-                @(isDarkMode ? "Light mode" : "Dark mode")
+<div class="layout-container @ThemeClass">
+    <header class="header">
+        <div class="header-left">
+            <a class="nav-button" href="/">Hem</a>
+            <a class="nav-button" href="/kalender">Kalender</a>
+        </div>
+
+        <div class="header-center">
+            <span class="header-title">Bastuflotten</span>
+        </div>
+
+        <div class="header-right">
+            <a class="nav-button" href="/login">Login</a>
+            <button class="toggle-theme" @onclick="ToggleTheme">
+                @(IsDarkMode ? "Light mode" : "Dark mode")
             </button>
         </div>
     </header>
 
-    <main class="content px-3">
+    <main class="main-content">
         @Body
     </main>
 
-    <footer>
-        <p>© <a href="https://mymh.dev" target="_blank">mymh.dev</a></p>
-        <p>Bastuflotte driven by <a href="https://www.dyviksudd.se/" target="_blank">dyviksudd.se</a></p>
+    <footer class="footer">
+        <p>
+            © 2025 Webbsida av <a href="https://mymh.dev" target="_blank">mymh.dev</a><br />
+            Bastuflotten och detta bokningssystem tillhör <a href="https://dyviksudd.se" target="_blank">dyviksudd.se</a>
+        </p>
     </footer>
 </div>
 
 @code {
-    private bool isDarkMode = false;
-    private string themeClass => isDarkMode ? "dark" : "light";
+    private bool IsDarkMode = false;
 
-    private void ToggleTheme()
+    private string ThemeClass => IsDarkMode ? "dark-mode" : "light-mode";
+
+    protected override async Task OnInitializedAsync()
     {
-        isDarkMode = !isDarkMode;
+        // Check localStorage on load
+        var theme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
+        if (theme == "dark")
+        {
+            IsDarkMode = true;
+        }
     }
+
+    private async Task ToggleTheme()
+    {
+        IsDarkMode = !IsDarkMode;
+        await JS.InvokeVoidAsync("localStorage.setItem", "theme", IsDarkMode ? "dark" : "light");
+    }
+
+    [Inject] private IJSRuntime JS { get; set; } = default!;
 }

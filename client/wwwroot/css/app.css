@@ -1,71 +1,189 @@
-.page {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-body, html {
+/* ========================================
+   Basic Page Layout
+======================================== */
+body {
     margin: 0;
+    padding: 0;
     font-family: Georgia, "Bitstream Charter", serif;
     font-size: 16px;
-    background-color: #f1f1f1;
-    color: #666;
 }
 
-main {
-    flex: 1;
-    font-size: 1.1rem;
-}
-
-* Layout structure */
-.page {
+.layout-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-.navbar {
+/* Main content area */
+.main-content {
+    flex: 1;
+    padding: 2rem 1.5rem;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ========================================
+   Theme (Light / Dark Modes)
+======================================== */
+.layout-container.light-mode {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.layout-container.dark-mode {
+    background-color: #111;
+    color: #fff;
+}
+
+/* Header and Footer styles per mode */
+.layout-container.light-mode header,
+.layout-container.light-mode footer {
     background-color: white;
     color: black;
-    padding: 1rem;
+}
+
+.layout-container.dark-mode header,
+.layout-container.dark-mode footer {
+    background-color: #000;
+    color: white;
+}
+
+/* Footer links in dark mode */
+.layout-container.dark-mode footer a {
+    color: white;
+}
+
+.layout-container {
+    transition: background-color 0.5s, color 0.5s;
+}
+
+header, footer, .main-content {
+    transition: background-color 0.5s, color 0.5s;
+}
+
+/* ========================================
+   Header & Navigation
+======================================== */
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    padding: 1rem 1.5rem;
+    background-color: inherit;
+    border-bottom: 1px solid #ccc;
 }
 
-footer {
-    background-color: white;
-    color: black;
+.header-left,
+.header-center,
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-center {
+    flex-grow: 1;
+    justify-content: center;
     text-align: center;
-    padding: 1rem;
+}
+
+.header-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    font-family: Georgia, serif;
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Navigation Buttons */
+.nav-button,
+.toggle-theme {
     font-size: 0.9rem;
-    margin-top: auto;
-}
-
-/* Dark mode styles */
-.dark {
-    background-color: #121212;
-    color: #ddd;
-}
-
-.dark .navbar, .dark footer {
-    background-color: #1e1e1e;
-    color: #ddd;
-}
-
-.theme-toggle {
-    background: none;
-    border: 1px solid #666;
     padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
-    cursor: pointer;
     border-radius: 4px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.mobile-header {
-    font-family: 'Fira Code', monospace;
+.nav-button:hover,
+.toggle-theme:hover {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
-.mobile-footer {
-    font-size: 0.85rem;
+.layout-container.dark-mode .nav-button:hover,
+.layout-container.dark-mode .toggle-theme:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Button Borders and Texts */
+.layout-container.light-mode .toggle-theme {
+    border-color: #666;
+    background: #f1f1f1;
+    color: black;
+}
+
+.layout-container.dark-mode .toggle-theme {
+    border-color: #aaa;
+    background: #111;
+    color: white;
+}
+
+/* ========================================
+   Footer
+======================================== */
+.footer {
+    font-size: 0.8rem;
+    padding: 1rem;
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* ========================================
+   Loading Spinner
+======================================== */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: var(--background-color, #f1f1f1);
+}
+
+.loading-spinner {
+    width: 100px;
+    height: 100px;
+}
+
+.loading-spinner circle {
+    fill: none;
+    stroke: #1b6ec2;
+    stroke-width: 8;
+    stroke-linecap: round;
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); transform-origin: 50% 50%; }
+    100% { transform: rotate(360deg); transform-origin: 50% 50%; }
+}
+
+.loading-text {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* ========================================
+   Error UI (Hidden)
+======================================== */
+#blazor-error-ui {
+    display: none;
 }
