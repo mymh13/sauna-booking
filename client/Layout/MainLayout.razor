@@ -1,12 +1,15 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
+<div class="page">
+    <header class="mobile-header p-3 text-center bg-dark text-white">
+        <h1 class="fs-4 m-0">Dyviksudds Bastuflotte</h1>
+    </header>
+
+    <main class="p-3">
+        @Body
     </main>
+
+    <footer class="mobile-footer p-2 text-center bg-light text-muted">
+        <small>© 2025 mymh.dev</small>
+    </footer>
 </div>
