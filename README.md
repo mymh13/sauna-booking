@@ -2,8 +2,10 @@ Info to be added in the future
 
 ```bash
 sauna-booking/                      ← GitHub root
-├── .git/                           ← Git config
 ├── .gitignore
+├── .github/
+│   └── workflows/
+│       └── deploy.yaml             ← Workflow lives here
 ├── LICENSE
 ├── README.md                       ← this file
 ├── api/                            ← the .NET "backend" API
@@ -22,4 +24,5 @@ sauna-booking/                      ← GitHub root
 │   ├── Properties/
 │   └── wwwroot/
 └── scripts/                        ← Deploy scripts, GitHub Actions, CI/CD
+    └── Caddyfile.template           ← Secure, tracked template (no secrets)
 ```

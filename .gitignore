@@ -21,6 +21,7 @@ appsettings.*.json
 !scripts/deploy_api.sh
 !scripts/deploy_client.sh
 /client_publish/
+/deploy/Caddyfile
 
 # User-specific files
 *.rsuser
