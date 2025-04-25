@@ -37,6 +37,7 @@ jobs:
     # Prepare Caddyfile dynamically
     - name: Prepare Caddyfile
       run: |
+        mkdir -p ./deploy
         sed "s|\${BACKEND_PORT}|${{ secrets.HETZNER_API_PORT }}|g" ./scripts/Caddyfile.template > ./deploy/Caddyfile
 
     # Sync and reload Caddyfile
