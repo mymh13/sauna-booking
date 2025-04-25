@@ -57,8 +57,8 @@ jobs:
           fi
     EOF
 
-    # Deploy API via rsync to Hetzner
-    - name: Deploy API to Hetzner
+    # Deploy API via rsync to Cloud API host
+    - name: Deploy API to Cloud API host
       run: |
         rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./publish/ saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/api/
 
