@@ -1,15 +1,31 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <header class="mobile-header p-3 text-center bg-dark text-white">
-        <h1 class="fs-4 m-0">Dyviksudds Bastuflotte</h1>
+<div class="page @themeClass">
+    <header>
+        <div class="navbar">
+            <div class="site-title">Dyviksudds Bastuflotte</div>
+            <button class="theme-toggle" @onclick="ToggleTheme">
+                @(isDarkMode ? "Light mode" : "Dark mode")
+            </button>
+        </div>
     </header>
 
-    <main class="p-3">
+    <main class="content px-3">
         @Body
     </main>
 
-    <footer class="mobile-footer p-2 text-center bg-light text-muted">
-        <small>© 2025 mymh.dev</small>
+    <footer>
+        <p>© <a href="https://mymh.dev" target="_blank">mymh.dev</a></p>
+        <p>Bastuflotte driven by <a href="https://www.dyviksudd.se/" target="_blank">dyviksudd.se</a></p>
     </footer>
 </div>
+
+@code {
+    private bool isDarkMode = false;
+    private string themeClass => isDarkMode ? "dark" : "light";
+
+    private void ToggleTheme()
+    {
+        isDarkMode = !isDarkMode;
+    }
+}

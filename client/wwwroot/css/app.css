@@ -4,9 +4,62 @@
     min-height: 100vh;
 }
 
+body, html {
+    margin: 0;
+    font-family: Georgia, "Bitstream Charter", serif;
+    font-size: 16px;
+    background-color: #f1f1f1;
+    color: #666;
+}
+
 main {
     flex: 1;
     font-size: 1.1rem;
+}
+
+* Layout structure */
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.navbar {
+    background-color: white;
+    color: black;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+footer {
+    background-color: white;
+    color: black;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    margin-top: auto;
+}
+
+/* Dark mode styles */
+.dark {
+    background-color: #121212;
+    color: #ddd;
+}
+
+.dark .navbar, .dark footer {
+    background-color: #1e1e1e;
+    color: #ddd;
+}
+
+.theme-toggle {
+    background: none;
+    border: 1px solid #666;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
 .mobile-header {
