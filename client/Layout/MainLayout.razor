@@ -4,7 +4,7 @@
     <header class="header">
         <div class="header-left">
             <a class="nav-button" href="/">Hem</a>
-            <a class="nav-button" href="/kalender">Kalender</a>
+            <a class="nav-button" href="/calendar">Kalender</a>
         </div>
 
         <div class="header-center">
@@ -12,7 +12,7 @@
         </div>
 
         <div class="header-right">
-            <a class="nav-button" href="/login">Login</a>
+            <a class="nav-button" NavLink href="login">Login</a>
             <button class="toggle-theme" @onclick="ToggleTheme">
                 @(IsDarkMode ? "Light mode" : "Dark mode")
             </button>
