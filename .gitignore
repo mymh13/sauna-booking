@@ -17,11 +17,9 @@ appsettings.*.json
 *.env
 /api/*.env
 /client/*.env
-/scripts/*.sh
-!scripts/deploy_api.sh
-!scripts/deploy_client.sh
 /client_publish/
-/deploy/Caddyfile
+/api/.local-data/sauna-booking.db
+/api/.local-data/*
 
 # User-specific files
 *.rsuser
