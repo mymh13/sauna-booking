@@ -34,7 +34,7 @@ sauna-booking/                          Root folder of the project/repository (m
 │   │   ├── MainLayout.razor.css        Styling for MainLayout
 │   │   ├── NavMenu.razor               Navigation menu component
 │   │   └── NavMenu.razor.css           Styling for NavMenu
-│   ├── Models/                         NOTE! This is a temporary folder to simulate backend while developing locally - delete later!
+│   ├── Models/                         NOTE! Blazor WASM cannot reference backend projects, so we need frontend Models too
 │   │   ├── LoginRequest.cs             See /Models above!
 │   │   ├── LoginResponse.cs            See /Models above!
 │   ├── Pages/
