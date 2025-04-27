@@ -34,10 +34,17 @@ sauna-booking/                          Root folder of the project/repository (m
 │   │   ├── MainLayout.razor.css        Styling for MainLayout
 │   │   ├── NavMenu.razor               Navigation menu component
 │   │   └── NavMenu.razor.css           Styling for NavMenu
+│   ├── Models/                         NOTE! This is a temporary folder to simulate backend while developing locally - delete later!
+│   │   ├── LoginRequest.cs             See /Models above!
+│   │   ├── LoginResponse.cs            See /Models above!
 │   ├── Pages/
-│   │   └── Home.razor                  Landing page of the frontend
+│   │   ├── Home.razor                  Landing page of the frontend
+│   │   ├── Login.razor                 TODO: 
+│   │   └── Login.razor.css             TODO: 
 │   ├── Properties/
 │   │   └── launchSsettings.json        Frontend local development server profiles
+│   ├── Services/
+│   │   └── AuthService.cs              TODO: 
 │   ├── wwwroot/
 │   │   ├── css/
 │   │   │   └── app.css                 General frontend custom styles         
