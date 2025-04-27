@@ -10,14 +10,15 @@ sauna-booking/                          Root folder of the project/repository (m
 │   ├── .local-data/                    Local production only: not tracked by Git
 │   │   └── sauna-booking.db            Local Database for development only, not tracked
 │   ├── Controllers/
-│   │   └── SystemController.cs         TODO:
+│   │   └── AuthController.cs           TODO:
 │   ├── Data/
 │   │   └── SaunaBookingDbContext.cs    TODO:
 │   ├── Migrations/
 │   │   └── *                           Entity Framework Migration-files
 │   ├── Models/         
 │   │   ├── Booking.cs                  TODO:             
-│   │   ├── PingResponse.cs             TODO:
+│   │   ├── LoginRequest.cs             TODO:
+│   │   ├── LoginResponse.cs            TODO:
 │   │   └── User.cs                     TODO:
 │   ├── Properties/
 │   │   └── launchSettingss.json        Local development server profiles (port, environment, SSL, etc.)
