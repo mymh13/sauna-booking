@@ -7,10 +7,18 @@ sauna-booking/                          Root folder of the project/repository (m
 │       └── deploy.yaml                 GitHub Actions workflow to build and deploy backend (Cloud) and frontend (FTP)
 │
 ├── api/                                .NET API, ("backend")
-│   ├── Controllers/                    Controller classes
+│   ├── .local-data/                    Local production only: not tracked by Git
+│   │   └── sauna-booking.db            Local Database for development only, not tracked
+│   ├── Controllers/
 │   │   └── SystemController.cs         TODO:
-│   ├── Models/                         Data models, DTOs, ViewModels (e.g., BookingDto, UserModel)
-│   │   └── PingResponse.cs             TODO:
+│   ├── Data/
+│   │   └── SaunaBookingDbContext.cs    TODO:
+│   ├── Migrations/
+│   │   └── *                           Entity Framework Migration-files
+│   ├── Models/         
+│   │   ├── Booking.cs                  TODO:             
+│   │   ├── PingResponse.cs             TODO:
+│   │   └── User.cs                     TODO:
 │   ├── Properties/
 │   │   └── launchSettingss.json        Local development server profiles (port, environment, SSL, etc.)
 │   ├── Services/                       Business logic classes (e.g., BookingService, ValidationService)
