@@ -7,7 +7,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5011") }); // TODO: Change to the production URL
+// builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5011") }); // Local URL for development
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://sauna-api.mymh.dev/") });
 builder.Services.AddScoped<AuthService>();
 
 await builder.Build().RunAsync();
