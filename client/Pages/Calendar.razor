@@ -11,35 +11,37 @@
     <button @onclick="NextWeek" class="btn">→</button>
 </div>
 
-<div class="calendar-grid overflow-x-auto">
-    <table class="table-auto w-full border-collapse">
-        <thead>
-            <tr>
-                <th class="border p-2">Tid</th>
-                @foreach (var day in DaysOfWeek)
-                {
-                    <th class="border p-2 cursor-pointer hover:bg-gray-100" @onclick="() => OpenDay(day)">
-                        @day.ToString("ddd dd/MM")
-                    </th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var slot in TimeSlots)
-            {
+<div class="flex justify-center overflow-x-auto">
+    <div class="calendar-grid">
+        <table class="table-auto w-full border-collapse">
+            <thead>
                 <tr>
-                    <td class="border p-2">@slot.Label</td>
+                    <th class="border p-2">Tid</th>
                     @foreach (var day in DaysOfWeek)
                     {
-                        var status = GetSlotStatus(day, slot.StartTime);
-                        <td class="border p-2 text-center" style="background-color:@GetColorForStatus(status)">
-                            @GetUsernameForSlot(day, slot.StartTime)
-                        </td>
+                        <th class="border p-2 cursor-pointer hover:bg-gray-100" @onclick="() => OpenDay(day)">
+                            @day.ToString("ddd dd/MM")
+                        </th>
                     }
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var slot in TimeSlots)
+                {
+                    <tr>
+                        <td class="border p-2">@slot.Label</td>
+                        @foreach (var day in DaysOfWeek)
+                        {
+                            var status = GetSlotStatus(day, slot.StartTime);
+                            <td class="border p-2 text-center" style="background-color:@GetColorForStatus(status)">
+                                @GetUsernameForSlot(day, slot.StartTime)
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @code {
@@ -87,22 +89,15 @@
     private void GenerateTimeSlots()
     {
         TimeSlots.Clear();
-        for (int hour = 7; hour < 24; hour += 2)
+        for (int hour = 11; hour < 23; hour++)
         {
             var slot = new TimeSlot
             {
-                Label = $"{hour:00}-{(hour + 2) % 24:00}",
+                Label = $"{hour:00}-{(hour + 1) % 24:00}",
                 StartTime = TimeSpan.FromHours(hour)
             };
             TimeSlots.Add(slot);
         }
-
-        // Add the last slot that crosses midnight (23-01)
-        TimeSlots.Add(new TimeSlot
-        {
-            Label = "23-01",
-            StartTime = TimeSpan.FromHours(23)
-        });
     }
 
     // ---- FAKE MOCK DATA ----

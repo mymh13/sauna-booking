@@ -7,6 +7,14 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 .nav-link, .nav-button, .nav-user {
@@ -22,4 +30,11 @@
 
 .nav-link:hover {
     text-decoration: underline;
+}
+
+.nav-button {
+    border: 1px solid white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 5px;
+    background: transparent;
 }
