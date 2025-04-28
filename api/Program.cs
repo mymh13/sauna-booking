@@ -11,24 +11,20 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<SaunaBookingDbContext>(options =>
     options.UseSqlite(connectionString));
 
+// Detect allowed origins dynamically
+string[] allowedOrigins = builder.Environment.IsDevelopment()
+    ? new[] { "https://localhost:5067" }
+    : new[] { "https://mymh.dev", "https://www.mymh.dev" };
+
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyCorsPolicy", policy =>
     {
-        if (builder.Environment.IsDevelopment())
-        {
-            policy.WithOrigins("https://localhost:5067")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        }
-        else
-        {
-            policy.WithOrigins("https://mymh.dev", "https://www.mymh.dev")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials(); // ADD THIS
-        }
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
@@ -39,8 +35,7 @@ builder.Services.AddControllers();
 var app = builder.Build();
 
 // Use Services
-app.UseCors("MyCorsPolicy"); // Explicitly apply the named policy
-
+app.UseCors("MyCorsPolicy"); // Explicitly apply the named policy, i.e do not use the default
 app.MapControllers();
 
 // Development: a root Hello World endpoint for health check

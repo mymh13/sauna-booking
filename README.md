@@ -73,10 +73,12 @@ sauna-booking/                          Root folder of the project/repository (m
 │   │   ├── LoginRequest.cs             Model representing login form data (username + password)
 │   │   ├── LoginResponse.cs            Model representing the API's login response (success, role, message)
 │   ├── Pages/
+│   │   ├── Calendar.razor              TODO:
+│   │   ├── Dashboard.razor             TODO:
 │   │   ├── Home.razor                  Landing page for the frontend
 │   │   ├── Login.razor                 Login form page for user authentication
 │   │   ├── Login.razor.css             Custom CSS for styling the login form
-│   │   └── Calendar.razor              Placeholder for future booking calendar (initial empty template)
+│   │   └── NotFound.razor              TODO:
 │   ├── Properties/
 │   │   └── launchSettings.json         Frontend local development server profiles
 │   ├── Services/
