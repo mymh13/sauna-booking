@@ -20,6 +20,7 @@ appsettings.*.json
 /client_publish/
 /api/.local-data/sauna-booking.db
 /api/.local-data/*
+.htaccess
 
 # User-specific files
 *.rsuser

@@ -4,6 +4,7 @@
 
 @inject AuthService AuthService
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <div class="login-container">
     <h2>Logga in</h2>
@@ -42,7 +43,15 @@
         var result = await AuthService.LoginAsync(LoginModel);
         if (result.Success)
         {
-            Navigation.NavigateTo("/");
+            // Save username and role to localStorage
+            await JS.InvokeVoidAsync("localStorage.setItem", "username", LoginModel.Username);
+            await JS.InvokeVoidAsync("localStorage.setItem", "role", result.Role);
+
+            // Optional: Show welcome alert
+            await JS.InvokeVoidAsync("alert", $"Välkommen {LoginModel.Username}!");
+
+            // Redirect to Calendar (or just home)
+            Navigation.NavigateTo("/sauna/calendar");
         }
         else
         {
