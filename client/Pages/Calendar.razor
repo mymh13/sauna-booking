@@ -1,7 +1,157 @@
 @page "/calendar"
+@using System.Globalization
 
-<PageTitle>Kalender</PageTitle>
+<h1 class="text-center my-4">Bokningskalender</h1>
 
-<h1>Kalender</h1>
+<div class="calendar-header flex justify-center items-center mb-4">
+    <button @onclick="PreviousWeek" class="btn">←</button>
+    <div class="week-info mx-4">
+        Vecka @CurrentWeekNumber (@StartOfWeek.ToString("dd MMM", CultureInfo.InvariantCulture) - @EndOfWeek.ToString("dd MMM", CultureInfo.InvariantCulture))
+    </div>
+    <button @onclick="NextWeek" class="btn">→</button>
+</div>
 
-<p>Här kommer bokningskalendern att visas.</p>
+<div class="calendar-grid overflow-x-auto">
+    <table class="table-auto w-full border-collapse">
+        <thead>
+            <tr>
+                <th class="border p-2">Tid</th>
+                @foreach (var day in DaysOfWeek)
+                {
+                    <th class="border p-2 cursor-pointer hover:bg-gray-100" @onclick="() => OpenDay(day)">
+                        @day.ToString("ddd dd/MM")
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var slot in TimeSlots)
+            {
+                <tr>
+                    <td class="border p-2">@slot.Label</td>
+                    @foreach (var day in DaysOfWeek)
+                    {
+                        var status = GetSlotStatus(day, slot.StartTime);
+                        <td class="border p-2 text-center" style="background-color:@GetColorForStatus(status)">
+                            @GetUsernameForSlot(day, slot.StartTime)
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private DateTime Today = DateTime.Today;
+    private DateTime StartOfWeek;
+    private DateTime EndOfWeek;
+    private List<DateTime> DaysOfWeek = new();
+    private List<TimeSlot> TimeSlots = new();
+
+    protected override void OnInitialized()
+    {
+        CalculateWeek(Today);
+        GenerateTimeSlots();
+    }
+
+    private void CalculateWeek(DateTime referenceDate)
+    {
+        var diff = (7 + (referenceDate.DayOfWeek - DayOfWeek.Monday)) % 7;
+        StartOfWeek = referenceDate.AddDays(-diff).Date;
+        EndOfWeek = StartOfWeek.AddDays(6);
+        DaysOfWeek = Enumerable.Range(0, 7).Select(i => StartOfWeek.AddDays(i)).ToList();
+    }
+
+    private void PreviousWeek()
+    {
+        Today = Today.AddDays(-7);
+        CalculateWeek(Today);
+    }
+
+    private void NextWeek()
+    {
+        Today = Today.AddDays(7);
+        CalculateWeek(Today);
+    }
+
+    private int CurrentWeekNumber
+    {
+        get
+        {
+            var ci = CultureInfo.CurrentCulture;
+            return ci.Calendar.GetWeekOfYear(Today, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        }
+    }
+
+    private void GenerateTimeSlots()
+    {
+        TimeSlots.Clear();
+        for (int hour = 7; hour < 24; hour += 2)
+        {
+            var slot = new TimeSlot
+            {
+                Label = $"{hour:00}-{(hour + 2) % 24:00}",
+                StartTime = TimeSpan.FromHours(hour)
+            };
+            TimeSlots.Add(slot);
+        }
+
+        // Add the last slot that crosses midnight (23-01)
+        TimeSlots.Add(new TimeSlot
+        {
+            Label = "23-01",
+            StartTime = TimeSpan.FromHours(23)
+        });
+    }
+
+    // ---- FAKE MOCK DATA ----
+    private string GetSlotStatus(DateTime day, TimeSpan startTime)
+    {
+        // Saturday (lördag) 15-19 is always blue
+        if (day.DayOfWeek == DayOfWeek.Saturday && (startTime.Hours == 15 || startTime.Hours == 17))
+        {
+            return "Open";
+        }
+
+        // Example hardcoded dummy rules:
+        if (startTime.Hours == 9 && day.DayOfWeek == DayOfWeek.Wednesday)
+            return "Private";
+
+        if (startTime.Hours == 11 && day.DayOfWeek == DayOfWeek.Monday)
+            return "Blocked";
+
+        return "Free"; // Default free
+    }
+
+    private string GetColorForStatus(string status) => status switch
+    {
+        "Free" => "#90ee90",    // Light green
+        "Private" => "#f08080", // Light red
+        "Open" => "#add8e6",    // Light blue
+        "Blocked" => "#d3d3d3", // Light gray
+        _ => "white"
+    };
+
+    private string GetUsernameForSlot(DateTime day, TimeSpan startTime)
+    {
+        // Mock: Only show username on booked slots
+        if (GetSlotStatus(day, startTime) == "Private")
+            return "AnvändareX";
+        if (GetSlotStatus(day, startTime) == "Open")
+            return "AnvändareY";
+        return "";
+    }
+
+    private void OpenDay(DateTime day)
+    {
+        // TODO: Navigate to day view later
+        Console.WriteLine($"Clicked on {day.ToShortDateString()}");
+    }
+
+    public class TimeSlot
+    {
+        public string Label { get; set; } = "";
+        public TimeSpan StartTime { get; set; }
+    }
+}
