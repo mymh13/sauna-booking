@@ -2,21 +2,7 @@
 
 <div class="layout-container @ThemeClass">
     <header class="header">
-    <div class="header-left">
-        <NavLink class="nav-button" href="https://mymh.dev">mymh.dev</NavLink> 
-        <NavLink class="nav-button" href="calendar">Kalender</NavLink>
-    </div>
-
-        <div class="header-center">
-            <span class="header-title">Bastuflotten</span>
-        </div>
-
-        <div class="header-right">
-        <NavLink class="nav-button" href="login">Login</NavLink>
-        <button class="toggle-theme" @onclick="ToggleTheme">
-            @(IsDarkMode ? "Light mode" : "Dark mode")
-        </button>
-    </div>
+        <NavMenu />
     </header>
 
     <main class="main-content">
@@ -25,8 +11,8 @@
 
     <footer class="footer">
         <p>
-            © 2025 Webbsida av <a href="https://mymh.dev" target="_blank">mymh.dev</a><br />
-            Bastuflotten och detta bokningssystem tillhör <a href="https://dyviksudd.se" target="_blank">dyviksudd.se</a>
+            © 2025 Webbsida av <a href="https://mymh.dev">mymh.dev</a><br />
+            Bastuflotten och detta bokningssystem tillhör <a href="https://dyviksudd.se">dyviksudd.se</a>
         </p>
     </footer>
 </div>
@@ -38,7 +24,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Check localStorage on load
         var theme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
         if (theme == "dark")
         {
