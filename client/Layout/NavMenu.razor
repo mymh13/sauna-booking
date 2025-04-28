@@ -1,10 +1,8 @@
-﻿@inject NavigationManager Navigation
-
-<nav class="nav-menu">
+﻿<nav class="nav-menu">
     <div class="nav-container">
         <a href="https://mymh.dev" class="nav-link">mymh.dev</a>
-        <a href="/calendar" class="nav-link">Kalender</a>
-        <a href="/login" class="nav-link">Logga in</a>
+        <NavLink href="calendar" class="nav-link" Match="NavLinkMatch.All">Kalender</NavLink>
+        <NavLink href="login" class="nav-link" Match="NavLinkMatch.All">Logga in</NavLink>
     </div>
 </nav>
 

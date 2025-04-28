@@ -3,8 +3,8 @@
 <div class="layout-container @ThemeClass">
     <header class="header">
     <div class="header-left">
-        <a class="nav-button" href="https://mymh.dev">mymh.dev</a>
-        <a class="nav-button" href="/calendar">Kalender</a>
+        <NavLink class="nav-button" href="https://mymh.dev">mymh.dev</NavLink> 
+        <NavLink class="nav-button" href="calendar">Kalender</NavLink>
     </div>
 
         <div class="header-center">
@@ -12,11 +12,11 @@
         </div>
 
         <div class="header-right">
-            <a class="nav-button" NavLink href="login">Login</a>
-            <button class="toggle-theme" @onclick="ToggleTheme">
-                @(IsDarkMode ? "Light mode" : "Dark mode")
-            </button>
-        </div>
+        <NavLink class="nav-button" href="login">Login</NavLink>
+        <button class="toggle-theme" @onclick="ToggleTheme">
+            @(IsDarkMode ? "Light mode" : "Dark mode")
+        </button>
+    </div>
     </header>
 
     <main class="main-content">
