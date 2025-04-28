@@ -187,3 +187,16 @@ header, footer, .main-content {
 #blazor-error-ui {
     display: none;
 }
+
+/* ========================================
+   Login Form Fixes for Dark Mode
+======================================== */
+.dark-mode .login-container {
+    color: #000000; /* Force dark text inside login container */
+    background-color: #ffffff; /* Keep the login box background white */
+}
+
+.dark-mode .input-field {
+    color: #000000; /* Black text inside input fields */
+    background-color: #ffffff; /* White background inside input fields */
+}
