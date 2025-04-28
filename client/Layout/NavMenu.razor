@@ -16,15 +16,22 @@
         {
             <NavLink href="login" class="nav-link" Match="NavLinkMatch.All">Logga in</NavLink>
         }
+        <button class="nav-button" @onclick="ToggleTheme">
+            @CurrentThemeLabel
+        </button>
     </div>
 </nav>
 
 @code {
     private string? LoggedInUsername;
+    private string CurrentThemeLabel = "Mörkt läge";
 
     protected override async Task OnInitializedAsync()
     {
         LoggedInUsername = await JS.InvokeAsync<string>("localStorage.getItem", "username");
+
+        var theme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
+        CurrentThemeLabel = theme == "light" ? "Mörkt läge" : "Ljust läge";
     }
 
     private async Task Logout()
@@ -33,5 +40,22 @@
         await JS.InvokeVoidAsync("localStorage.removeItem", "role");
         LoggedInUsername = null;
         Navigation.NavigateTo("/sauna/");
+    }
+
+    private async Task ToggleTheme()
+    {
+        var currentTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
+        if (currentTheme == "light")
+        {
+            await JS.InvokeVoidAsync("localStorage.setItem", "theme", "dark");
+            CurrentThemeLabel = "Ljust läge";
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("localStorage.setItem", "theme", "light");
+            CurrentThemeLabel = "Mörkt läge";
+        }
+
+        await JS.InvokeVoidAsync("location.reload");
     }
 }
