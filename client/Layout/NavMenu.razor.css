@@ -11,10 +11,10 @@
 }
 
 .nav-right {
-    margin-left: auto;
     display: flex;
     align-items: center;
     gap: 1rem;
+    margin-left: auto;
 }
 
 .nav-link, .nav-button, .nav-user {
