@@ -3,13 +3,11 @@
 
 <h1 class="text-center my-4">Bokningskalender</h1>
 
-<div class="flex justify-center mb-4">
-    <div class="flex items-center gap-4">
-        <button @onclick="PreviousWeek" class="btn px-3 py-1 text-lg">←</button>
-        <span class="text-lg font-semibold">
-            Vecka @CurrentWeekNumber (@StartOfWeek:dd MMM - @EndOfWeek:dd MMM)
-        </span>
-        <button @onclick="NextWeek" class="btn px-3 py-1 text-lg">→</button>
+<div class="calendar-header flex justify-center items-center mb-4">
+    <div class="flex items-center gap-6 text-lg font-semibold">
+        <button @onclick="PreviousWeek" class="btn px-3 py-1">←</button>
+        <span>@StartOfWeek.ToString("yyyy-MM-dd") / Vecka @CurrentWeekNumber / @EndOfWeek.ToString("yyyy-MM-dd")</span>
+        <button @onclick="NextWeek" class="btn px-3 py-1">→</button>
     </div>
 </div>
 
