@@ -3,12 +3,14 @@
 
 <h1 class="text-center my-4">Bokningskalender</h1>
 
-<div class="calendar-header flex justify-center items-center mb-4">
-    <button @onclick="PreviousWeek" class="btn">←</button>
-    <div class="week-info mx-4">
-        Vecka @CurrentWeekNumber (@StartOfWeek.ToString("dd MMM", CultureInfo.InvariantCulture) - @EndOfWeek.ToString("dd MMM", CultureInfo.InvariantCulture))
+<div class="flex justify-center mb-4">
+    <div class="flex items-center gap-4">
+        <button @onclick="PreviousWeek" class="btn px-3 py-1 text-lg">←</button>
+        <span class="text-lg font-semibold">
+            Vecka @CurrentWeekNumber (@StartOfWeek:dd MMM - @EndOfWeek:dd MMM)
+        </span>
+        <button @onclick="NextWeek" class="btn px-3 py-1 text-lg">→</button>
     </div>
-    <button @onclick="NextWeek" class="btn">→</button>
 </div>
 
 <div class="flex justify-center overflow-x-auto">
