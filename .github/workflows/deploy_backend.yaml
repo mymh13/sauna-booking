@@ -1,0 +1,39 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/**'
+      - '.github/workflows/deploy_backend.yaml'
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up .NET 9 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Publish API
+      run: dotnet publish ./api/SaunaBookingApi.csproj -c Release -o ./publish
+
+    - name: Add SSH key for Hetzner
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.HETZNER_DEPLOY_KEY }}
+
+    - name: Deploy API to Hetzner
+      run: |
+        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./publish/ saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/api/
+
+    - name: Restart API (SSH)
+      run: |
+        ssh -o StrictHostKeyChecking=no saunadeploy@${{ secrets.HETZNER_HOST }} << 'EOF'
+          echo "Backend deploy complete on $(hostname) at $(date)"
+        EOF
