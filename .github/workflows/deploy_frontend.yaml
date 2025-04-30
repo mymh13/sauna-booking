@@ -1,0 +1,40 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'client/**'
+      - '.github/workflows/deploy_frontend.yaml'
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up .NET 9 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Clean previous frontend publish
+      run: rm -rf ./client_publish
+
+    - name: Publish Blazor WASM
+      run: dotnet publish ./client/client.csproj -c Release -o ./client_publish /p:BaseHref="/sauna/"
+
+    - name: Install lftp if needed
+      run: |
+        if ! command -v lftp &> /dev/null; then
+          sudo apt-get update && sudo apt-get install -y lftp
+        fi
+
+    - name: Upload frontend to Loopia FTP
+      run: |
+        lftp -c "
+          open -u ${{ secrets.LOOPIA_FTP_USER }},${{ secrets.LOOPIA_FTP_PASS }} ${{ secrets.LOOPIA_FTP_HOST }};
+          mirror -R ./client_publish/wwwroot mymh.dev/public_html/sauna;
+          quit"
