@@ -10,10 +10,14 @@
     flex-wrap: wrap;
 }
 
+.nav-left,
 .nav-right {
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.nav-right {
     margin-left: auto;
 }
 
