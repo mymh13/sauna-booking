@@ -12,14 +12,14 @@
 
     <div class="overflow-x-auto">
         <div class="calendar-grid">
-        <table class="table-auto w-full border-collapse">
+        <table class="table-auto border-collapse">
             <thead>
                 <tr>
                     <th class="border p-2">Tid</th>
                     @foreach (var day in DaysOfWeek)
                     {
                         <th class="border p-2 cursor-pointer hover:bg-gray-100" @onclick="() => OpenDay(day)">
-                            @day.ToString("ddd dd/MM")
+                            @CapitalizeFirstLetter(day.ToString("ddd dd MMM", new CultureInfo("sv-SE")))
                         </th>
                     }
                 </tr>
@@ -148,5 +148,10 @@
     {
         public string Label { get; set; } = "";
         public TimeSpan StartTime { get; set; }
+    }
+
+    private string CapitalizeFirstLetter(string input)
+    {
+        return string.IsNullOrEmpty(input) ? input : char.ToUpper(input[0]) + input.Substring(1);
     }
 }
