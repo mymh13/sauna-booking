@@ -1,10 +1,10 @@
 @page "/calendar"
 @using System.Globalization
 
-<div class="flex flex-col items-center">
+<div class="calendar-wrapper">
     <h1 class="text-center my-4 text-2xl font-semibold">Bokningskalender</h1>
 
-    <div class="flex items-center gap-6 text-lg font-semibold mb-4">
+    <div class="week-header flex items-center gap-6 text-lg font-semibold mb-4">
         <button @onclick="PreviousWeek" class="btn px-3 py-1">←</button>
         <span>@StartOfWeek.ToString("yyyy-MM-dd") / Vecka @CurrentWeekNumber / @EndOfWeek.ToString("yyyy-MM-dd")</span>
         <button @onclick="NextWeek" class="btn px-3 py-1">→</button>
@@ -12,33 +12,33 @@
 
     <div class="overflow-x-auto">
         <div class="calendar-grid">
-        <table class="table-auto border-collapse">
-            <thead>
-                <tr>
-                    <th class="border p-2">Tid</th>
-                    @foreach (var day in DaysOfWeek)
-                    {
-                        <th class="border p-2 cursor-pointer hover:bg-gray-100" @onclick="() => OpenDay(day)">
-                            @CapitalizeFirstLetter(day.ToString("ddd dd MMM", new CultureInfo("sv-SE")))
-                        </th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var slot in TimeSlots)
-                {
+            <table class="table-auto border-collapse">
+                <thead>
                     <tr>
-                        <td class="border p-2">@slot.Label</td>
+                        <th class="border p-2">Tid</th>
                         @foreach (var day in DaysOfWeek)
                         {
-                            var status = GetSlotStatus(day, slot.StartTime);
-                            <td class="border p-2 text-center" style="background-color:@GetColorForStatus(status)">
-                                @GetUsernameForSlot(day, slot.StartTime)
-                            </td>
+                            <th class="border p-2 cursor-pointer hover:bg-gray-100" @onclick="() => OpenDay(day)">
+                                @CapitalizeFirstLetter(day.ToString("ddd dd MMM", new CultureInfo("sv-SE")))
+                            </th>
                         }
                     </tr>
-                }
-            </tbody>
+                </thead>
+                <tbody>
+                    @foreach (var slot in TimeSlots)
+                    {
+                        <tr>
+                            <td class="border p-2">@slot.Label</td>
+                            @foreach (var day in DaysOfWeek)
+                            {
+                                var status = GetSlotStatus(day, slot.StartTime);
+                                <td class="border p-2 text-center" style="background-color:@GetColorForStatus(status)">
+                                    @GetUsernameForSlot(day, slot.StartTime)
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
             </table>
         </div>
     </div>

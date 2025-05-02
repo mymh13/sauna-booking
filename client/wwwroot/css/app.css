@@ -205,8 +205,18 @@ header, footer, .main-content {
    Calendar specific styles
 ======================================== */
 
-.calendar-grid {
+/* .calendar-grid {
     width: 100%;
     max-width: 900px;
+    margin: 0 auto;
+}
+
+.week-header-container {
+    width: fit-content;
+    margin: 0 auto;
+} */
+
+.calendar-wrapper {
+    max-width: 960px;
     margin: 0 auto;
 }
