@@ -1,5 +1,6 @@
 .nav-menu {
     background-color: transparent;
+    width: 100%;
     padding: 1rem;
 }
 
@@ -7,7 +8,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .nav-left {
