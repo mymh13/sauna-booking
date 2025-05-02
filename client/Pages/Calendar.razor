@@ -28,7 +28,10 @@
                     @foreach (var slot in TimeSlots)
                     {
                         <tr>
-                            <td class="border p-2">@slot.Label</td>
+                            <td class="border p-2 text-center hover:cursor-pointer"
+                                style="background-color:@GetColorForStatus(status)"
+                                title="@GetUsernameForSlot(day, slot.StartTime)">
+                            </td>
                             @foreach (var day in DaysOfWeek)
                             {
                                 var status = GetSlotStatus(day, slot.StartTime);
