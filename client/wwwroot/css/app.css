@@ -200,3 +200,12 @@ header, footer, .main-content {
     color: #000000; /* Black text inside input fields */
     background-color: #ffffff; /* White background inside input fields */
 }
+
+/* ========================================
+   Calendar specific styles
+======================================== */
+
+.calendar-grid {
+    width: 100%;
+    max-width: 900px;
+}
