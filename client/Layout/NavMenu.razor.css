@@ -10,14 +10,16 @@
     flex-wrap: wrap;
 }
 
-.nav-left,
-.nav-right {
+.nav-left {
     display: flex;
-    align-items: center;
     gap: 1rem;
+    align-items: center;
 }
 
 .nav-right {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
     margin-left: auto;
 }
 
