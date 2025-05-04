@@ -46,6 +46,7 @@ sauna-booking/                          Root folder of the project/repository (m
 │   │   └── sauna-booking.db            Local database for local testing (excluded from production)
 │   ├── Controllers/
 │   │   └── AuthController.cs           Handles login POST requests and returns login results
+│   │   └── BookingController.cs        TODO: 
 │   ├── Data/
 │   │   └── SaunaBookingDbContext.cs    Entity Framework Core DbContext managing Bookings and Users tables
 │   ├── Migrations/

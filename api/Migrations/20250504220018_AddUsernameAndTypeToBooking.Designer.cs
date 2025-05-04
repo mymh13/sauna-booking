@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SaunaBooking.Api.Data;
 
@@ -10,9 +11,11 @@ using SaunaBooking.Api.Data;
 namespace SaunaBookingApi.Migrations
 {
     [DbContext(typeof(SaunaBookingDbContext))]
-    partial class SaunaBookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250504220018_AddUsernameAndTypeToBooking")]
+    partial class AddUsernameAndTypeToBooking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
