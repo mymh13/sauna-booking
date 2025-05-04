@@ -74,6 +74,10 @@
     .mobile-only {
       display: block;
     }
+
+    .mobile-only .nav-button {
+      margin: 0.25rem;
+    }    
   
     .mobile-menu .nav-link {
       display: block;

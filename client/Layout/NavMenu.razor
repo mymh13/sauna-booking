@@ -5,23 +5,25 @@
     <div class="nav-container">
         <!-- Desktop links -->
         <div class="nav-left desktop-only">
-            <NavLink href="calendar" class="nav-link uppercase" Match="NavLinkMatch.All">Kalender</NavLink>
-            <NavLink href="dashboard" class="nav-link uppercase" Match="NavLinkMatch.All">Dashboard</NavLink>
+            <NavLink href="calendar" class="nav-link uppercase" Match="NavLinkMatch.All">KALENDER</NavLink>
+            <NavLink href="dashboard" class="nav-link uppercase" Match="NavLinkMatch.All">MINA SIDOR</NavLink>
         </div>
 
-        <!-- Mobile hamburger -->
-        <div class="mobile-only w-full">
+        <!-- Mobile: hamburger + theme button side by side -->
+        <div class="mobile-only w-full flex justify-between items-center px-4">
             <button class="nav-button" @onclick="ToggleMobileMenu">☰ Meny</button>
-            @if (ShowMobileMenu)
-            {
-                <div class="mobile-menu">
-                    <NavLink href="calendar" class="nav-link uppercase block">Kalender</NavLink>
-                    <NavLink href="dashboard" class="nav-link uppercase block">Dashboard</NavLink>
-                </div>
-            }
+            <button class="nav-button" @onclick="ToggleTheme">@CurrentThemeLabel</button>
         </div>
 
-        <div class="nav-center">
+        @if (ShowMobileMenu)
+        {
+            <div class="mobile-only mobile-menu text-center mt-2">
+                <NavLink href="calendar" class="nav-link uppercase block">Kalender</NavLink>
+                <NavLink href="dashboard" class="nav-link uppercase block">Dashboard</NavLink>
+            </div>
+        }
+
+        <div class="nav-center desktop-only">
             @if (!string.IsNullOrEmpty(LoggedInUsername))
             {
                 <span class="nav-user">Inloggad som: @LoggedInUsername</span>
