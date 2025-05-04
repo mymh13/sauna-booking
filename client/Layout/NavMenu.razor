@@ -3,7 +3,6 @@
 
 <nav class="nav-menu">
     <div class="nav-container">
-        <!-- Desktop links -->
         <div class="nav-left desktop-only">
             <NavLink href="calendar" class="nav-link uppercase" Match="NavLinkMatch.All">KALENDER</NavLink>
             <NavLink href="dashboard" class="nav-link uppercase" Match="NavLinkMatch.All">MINA SIDOR</NavLink>
@@ -13,6 +12,11 @@
         <div class="mobile-only w-full flex justify-between items-center px-4">
             <button class="nav-button" @onclick="ToggleMobileMenu">☰ Meny</button>
             <button class="nav-button" @onclick="ToggleTheme">@CurrentThemeLabel</button>
+            <button class="nav-button" @onclick="Logout">Logga ut</button>
+             @if (!string.IsNullOrEmpty(LoggedInUsername))
+            {
+                <button class="nav-button" @onclick="Logout">Logga ut</button>
+            }
         </div>
 
         @if (ShowMobileMenu)
@@ -30,7 +34,7 @@
             }
         </div>
 
-        <div class="nav-right">
+        <div class="nav-right desktop-only">
             @if (!string.IsNullOrEmpty(LoggedInUsername))
             {
                 <button class="nav-button" @onclick="Logout">Logga ut</button>

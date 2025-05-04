@@ -1,5 +1,6 @@
 @page "/calendar"
 @using System.Globalization
+@inject HttpClient Http
 
 <div class="calendar-wrapper">
     <h1 class="text-center my-4 text-2xl font-semibold">Bokningskalender</h1>
@@ -34,8 +35,9 @@
                             {
                                 var status = GetSlotStatus(day, slot.StartTime);
 
-                                <!-- Square layout, dynamic width on mobile, no padding -->
+                                <!-- Dynamic width on mobile, no padding -->
                                 <td class="aspect-square w-10 sm:w-12 md:w-14 border p-0 text-center hover:cursor-pointer"
+                                    @onclick="() => BookSlot(day, slot.StartTime)"
                                     style="background-color:@GetColorForStatus(status)"
                                     title="@GetUsernameForSlot(day, slot.StartTime)">
                                 </td>
@@ -54,12 +56,14 @@
     private DateTime EndOfWeek;
     private List<DateTime> DaysOfWeek = new();
     private List<TimeSlot> TimeSlots = new();
+    private List<Booking> AllBookings = new();
 
-    protected override void OnInitialized()
-    {
-        CalculateWeek(Today);
-        GenerateTimeSlots();
-    }
+protected override async Task OnInitializedAsync()
+{
+    CalculateWeek(Today);
+    GenerateTimeSlots();
+    AllBookings = await Http.GetFromJsonAsync<List<Booking>>("bookings") ?? new();
+}
 
     private void CalculateWeek(DateTime referenceDate)
     {
@@ -104,48 +108,56 @@
         }
     }
 
-    // ---- FAKE MOCK DATA ----
-    private string GetSlotStatus(DateTime day, TimeSpan startTime)
+    private string? GetUsernameForSlot(DateTime day, TimeSpan time)
     {
-        // Saturday (lördag) 15-19 is always blue
-        if (day.DayOfWeek == DayOfWeek.Saturday && (startTime.Hours == 15 || startTime.Hours == 17))
-        {
-            return "Open";
-        }
+        var booking = AllBookings.FirstOrDefault(b => b.Date.Date == day.Date && b.StartTime == time);
+        return booking != null && booking.Type != "Free" ? booking.Username : null;
+    }
 
-        // Example hardcoded dummy rules:
-        if (startTime.Hours == 9 && day.DayOfWeek == DayOfWeek.Wednesday)
-            return "Private";
-
-        if (startTime.Hours == 11 && day.DayOfWeek == DayOfWeek.Monday)
-            return "Blocked";
-
-        return "Free"; // Default free
+    private string GetSlotStatus(DateTime day, TimeSpan time)
+    {
+        var booking = AllBookings.FirstOrDefault(b => b.Date.Date == day.Date && b.StartTime == time);
+        return booking?.Type ?? "Free";  // falls back to "Free" if not found
     }
 
     private string GetColorForStatus(string status) => status switch
     {
-        "Free" => "#228B22" ,   // Forest Green
+        "Free" => "#228B22",   // Forest Green
         "Private" => "#f08080", // Light red
         "Open" => "#add8e6",    // Light blue
         "Blocked" => "#d3d3d3", // Light gray
         _ => "white"
     };
 
-    private string GetUsernameForSlot(DateTime day, TimeSpan startTime)
-    {
-        // Mock: Only show username on booked slots
-        if (GetSlotStatus(day, startTime) == "Private")
-            return "AnvändareX";
-        if (GetSlotStatus(day, startTime) == "Open")
-            return "AnvändareY";
-        return "";
-    }
-
     private void OpenDay(DateTime day)
     {
         // TODO: Navigate to day view later
         Console.WriteLine($"Clicked on {day.ToShortDateString()}");
+    }
+
+    private async Task BookSlot(DateTime day, TimeSpan time)
+    {
+        var username = await JS.InvokeAsync<string>("localStorage.getItem", "username");
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            Console.WriteLine("User not logged in. Booking is not allowed.");
+            return; // Exit early if not logged in
+        }
+
+        var newBooking = new Booking
+        {
+            Date = day,
+            StartTime = time,
+            Username = username,
+            Type = "Private" // TEMP: always book private
+        };
+
+        var response = await Http.PostAsJsonAsync("bookings", newBooking);
+        if (response.IsSuccessStatusCode)
+        {
+            AllBookings.Add(newBooking);
+            StateHasChanged();
+        }
     }
 
     public class TimeSlot
@@ -157,5 +169,13 @@
     private string CapitalizeFirstLetter(string input)
     {
         return string.IsNullOrEmpty(input) ? input : char.ToUpper(input[0]) + input.Substring(1);
+    }
+
+    public class Booking
+    {
+        public DateTime Date { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public string Username { get; set; } = "";
+        public string Type { get; set; } = "Private"; // ← "Private", "Open", "Blocked"
     }
 }
