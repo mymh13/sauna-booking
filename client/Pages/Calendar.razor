@@ -4,10 +4,9 @@
 <div class="calendar-wrapper">
     <h1 class="text-center my-4 text-2xl font-semibold">Bokningskalender</h1>
 
-    <div class="week-header flex items-center gap-6 text-lg font-semibold mb-4">
-        <button @onclick="PreviousWeek" class="btn px-3 py-1">←</button>
+    <!-- Date/week header with responsive font size -->
+    <div class="text-center text-sm sm:text-base font-semibold mb-4">
         <span>@StartOfWeek.ToString("yyyy-MM-dd") / Vecka @CurrentWeekNumber / @EndOfWeek.ToString("yyyy-MM-dd")</span>
-        <button @onclick="NextWeek" class="btn px-3 py-1">→</button>
     </div>
 
     <div class="overflow-x-auto">
@@ -15,10 +14,12 @@
             <table class="table-auto border-collapse">
                 <thead>
                     <tr>
-                        <th class="border p-2">Tid</th>
+                        <!-- Smaller font + padding on mobile for header column -->
+                        <th class="border p-1 text-xs sm:text-sm md:text-base">Tid</th>
                         @foreach (var day in DaysOfWeek)
                         {
-                            <th class="border p-2 cursor-pointer hover:bg-gray-100" @onclick="() => OpenDay(day)">
+                            <!-- Smaller font + padding on mobile for weekday headers -->
+                            <th class="border p-1 text-xs sm:text-sm md:text-base cursor-pointer hover:bg-gray-100" @onclick="() => OpenDay(day)">
                                 @CapitalizeFirstLetter(day.ToString("ddd dd MMM", new CultureInfo("sv-SE")))
                             </th>
                         }
@@ -33,7 +34,8 @@
                             {
                                 var status = GetSlotStatus(day, slot.StartTime);
 
-                                <td class="border p-2 text-center hover:cursor-pointer"
+                                <!-- Square layout, dynamic width on mobile, no padding -->
+                                <td class="aspect-square w-10 sm:w-12 md:w-14 border p-0 text-center hover:cursor-pointer"
                                     style="background-color:@GetColorForStatus(status)"
                                     title="@GetUsernameForSlot(day, slot.StartTime)">
                                 </td>
