@@ -35,5 +35,6 @@ jobs:
     - name: Restart API (SSH)
       run: |
         ssh -o StrictHostKeyChecking=no saunadeploy@${{ secrets.HETZNER_HOST }} << 'EOF'
-          echo "Backend deploy complete on $(hostname) at $(date)"
+          sudo systemctl restart sauna-api.service
+          echo "Backend restarted on $(hostname) at $(date)"
         EOF
