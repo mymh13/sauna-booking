@@ -223,6 +223,16 @@ header, footer, .main-content {
 }
 
 .calendar-wrapper {
-    max-width: 960px;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    padding: 0 1rem;
+}
+
+@media (max-width: 640px) {
+    .calendar-grid th,
+    .calendar-grid td {
+      font-size: 0.7rem;    /* ✅ Smaller font for small screens */
+      padding: 0.25rem;     /* ✅ Tighter spacing for better fit */
+    }
 }
