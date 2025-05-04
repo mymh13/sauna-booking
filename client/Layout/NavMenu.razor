@@ -3,20 +3,35 @@
 
 <nav class="nav-menu">
     <div class="nav-container">
-        <div class="nav-left">
-            <a class="nav-link" href="https://mymh.dev">mymh.dev</a>
-            <NavLink href="calendar" class="nav-link" Match="NavLinkMatch.All">Kalender</NavLink>
-            <NavLink href="dashboard" class="nav-link" Match="NavLinkMatch.All">Dashboard</NavLink>
+        <!-- Desktop links -->
+        <div class="nav-left desktop-only">
+            <NavLink href="calendar" class="nav-link uppercase" Match="NavLinkMatch.All">Kalender</NavLink>
+            <NavLink href="dashboard" class="nav-link uppercase" Match="NavLinkMatch.All">Dashboard</NavLink>
         </div>
-        <div class="nav-right">
+
+        <!-- Mobile hamburger -->
+        <div class="mobile-only w-full">
+            <button class="nav-button" @onclick="ToggleMobileMenu">☰ Meny</button>
+            @if (ShowMobileMenu)
+            {
+                <div class="mobile-menu">
+                    <NavLink href="calendar" class="nav-link uppercase block">Kalender</NavLink>
+                    <NavLink href="dashboard" class="nav-link uppercase block">Dashboard</NavLink>
+                </div>
+            }
+        </div>
+
+        <div class="nav-center">
             @if (!string.IsNullOrEmpty(LoggedInUsername))
             {
                 <span class="nav-user">Inloggad som: @LoggedInUsername</span>
-                <button class="nav-button" @onclick="Logout">Logga ut</button>
             }
-            else
+        </div>
+
+        <div class="nav-right">
+            @if (!string.IsNullOrEmpty(LoggedInUsername))
             {
-                <NavLink href="login" class="nav-link" Match="NavLinkMatch.All">Logga in</NavLink>
+                <button class="nav-button" @onclick="Logout">Logga ut</button>
             }
             <button class="nav-button" @onclick="ToggleTheme">@CurrentThemeLabel</button>
         </div>
@@ -26,6 +41,7 @@
 @code {
     private string? LoggedInUsername;
     private string CurrentThemeLabel = "Mörkt läge";
+    private bool ShowMobileMenu = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,5 +74,10 @@
         }
 
         await JS.InvokeVoidAsync("location.reload");
+    }
+
+    private void ToggleMobileMenu()
+    {
+        ShowMobileMenu = !ShowMobileMenu;
     }
 }
