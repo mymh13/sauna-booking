@@ -40,5 +40,6 @@ app.MapControllers();
 
 // Optional: test endpoint
 app.MapGet("/", () => Results.Ok("Hello World!"));
+app.MapGet("/test", () => "API OK");
 
 app.Run();
