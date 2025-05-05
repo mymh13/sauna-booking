@@ -1,6 +1,6 @@
 @page "/login"
 @using SaunaBooking.Client.Services
-@using client.Models
+@using SaunaBooking.Client.Models
 
 @inject SaunaBooking.Client.Services.UserSessionService Session
 @inject NavigationManager Navigation
@@ -41,7 +41,7 @@
     private async Task HandleLogin()
     {
         var result = await Session.LoginAsync(LoginModel);
-        
+
         if (result.Success)
         {
             // Save username and role to localStorage
