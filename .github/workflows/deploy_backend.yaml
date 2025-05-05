@@ -21,7 +21,7 @@ jobs:
         dotnet-version: 9.0.x
 
     - name: Publish API
-      run: dotnet publish ./api/SaunaBookingApi.csproj -c Release -o ./publish
+      run: dotnet publish ./api/SaunaBookingApi.csproj -c Release -o ./api/publish
 
     - name: Add SSH key for Hetzner
       uses: webfactory/ssh-agent@v0.9.0
@@ -30,11 +30,13 @@ jobs:
 
     - name: Deploy API to Hetzner
       run: |
-        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./publish/ saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/api/publish/
+        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./api/publish/ saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/api/publish/
 
     - name: Restart API (SSH)
       run: |
         ssh -o StrictHostKeyChecking=no saunadeploy@${{ secrets.HETZNER_HOST }} << 'EOF'
           sudo systemctl restart sauna-api.service
           echo "Backend restarted on $(hostname) at $(date)"
+          sleep 5
+          curl --fail http://localhost:52843/db-check || (echo "Smoke test failed" && exit 1)
         EOF
