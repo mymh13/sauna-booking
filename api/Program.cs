@@ -34,6 +34,13 @@ builder.Services.AddControllers();
 // Build the app
 var app = builder.Build();
 
+// Apply any pending migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<SaunaBookingDbContext>();
+    db.Database.Migrate();
+}
+
 app.UseRouting();
 app.UseCors("MyCorsPolicy");
 app.MapControllers();
@@ -62,12 +69,5 @@ app.MapGet("/db-check", async (SaunaBookingDbContext db) =>
         return Results.Problem("DB ERROR: " + ex.Message);
     }
 });
-
-// Apply any pending migrations at startup
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<SaunaBookingDbContext>();
-    db.Database.Migrate();
-}
 
 app.Run();
