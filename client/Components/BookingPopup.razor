@@ -1,0 +1,47 @@
+@using SaunaBooking.Client.Services
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public string CurrentStatus { get; set; } = "Free";
+    [Parameter] public EventCallback<string?> OnStatusSelected { get; set; }
+
+    private string selectedStatus = "Private";
+
+    private void Confirm()
+    {
+        OnStatusSelected.InvokeAsync(selectedStatus);
+    }
+
+    private void Unbook()
+    {
+        OnStatusSelected.InvokeAsync("Free");
+    }
+
+    private void Cancel()
+    {
+        OnStatusSelected.InvokeAsync(null); // null means "cancel" action
+    }
+}
+
+@if (Visible)
+{
+    <div class="modal-backdrop" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+        <div class="modal-content" style="background: white; padding: 1.5rem; border-radius: 8px; width: 90%; max-width: 400px;">
+            <h4 style="margin-bottom: 1rem;">Välj bokningsstatus</h4>
+
+            <select @bind="selectedStatus" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;">
+                <option value="Private">Privat</option>
+                <option value="Open">Öppen</option>
+                <option value="Blocked">Blockerad</option>
+            </select>
+
+            <div style="display: flex; justify-content: space-between; gap: 0.5rem;">
+                @if (CurrentStatus != "Free")
+                {
+                    <button @onclick="Unbook" style="flex: 1;">Avboka</button>
+                }
+                <button @onclick="Confirm" style="flex: 1;">Boka</button>
+                <button @onclick="Cancel" style="flex: 1;">Stäng</button>
+            </div>
+        </div>
+    </div>
+}

@@ -65,6 +65,8 @@ sauna-booking/                          Root folder of the project/repository (m
 │   └── SaunaBookingApi.csproj          .NET project file for the backend
 │
 ├── client/                             Blazor WASM project ("frontend")
+│   ├── Components/
+│   │   └── BookingPopup.razor          TODO:
 │   ├── Layout/
 │   │   ├── MainLayout.razor            Root layout wrapper including header/footer/navigation
 │   │   ├── MainLayout.razor.css        Styling for the main layout and theme switching
@@ -83,6 +85,7 @@ sauna-booking/                          Root folder of the project/repository (m
 │   ├── Properties/
 │   │   └── launchSettings.json         Frontend local development server profiles
 │   ├── Services/
+│   │   ├── BookingStatusHelper.cs      TODO:
 │   │   └── UserSessionService.cs       TODO:
 │   ├── wwwroot/
 │   │   ├── css/
