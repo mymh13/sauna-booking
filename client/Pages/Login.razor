@@ -1,8 +1,8 @@
 @page "/login"
-@using client.Services
+@using SaunaBooking.Client.Services
 @using client.Models
 
-@inject AuthService AuthService
+@inject SaunaBooking.Client.Services.UserSessionService Session
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
@@ -40,7 +40,8 @@
 
     private async Task HandleLogin()
     {
-        var result = await AuthService.LoginAsync(LoginModel);
+        var result = await Session.LoginAsync(LoginModel);
+        
         if (result.Success)
         {
             // Save username and role to localStorage
