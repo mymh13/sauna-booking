@@ -1,7 +1,9 @@
 @page "/calendar"
 @using System.Globalization
+@using SaunaBooking.Client.Services
 @inject HttpClient Http
 @inject IJSRuntime JS
+@inject UserSessionService userSessionService
 
 <div class="calendar-wrapper">
     <h1 class="text-center my-4 text-2xl font-semibold">Bokningskalender</h1>
@@ -39,7 +41,7 @@
                                 <!-- Dynamic width on mobile, no padding -->
                                 <td class="aspect-square w-10 sm:w-12 md:w-14 border p-0 text-center hover:cursor-pointer"
                                     @onclick="() => BookSlot(day, slot.StartTime)"
-                                    style="background-color:@GetColorForStatus(status)"
+                                    style="background-color:@BookingStatusHelper.GetColorForStatus(status)"
                                     title="@GetUsernameForSlot(day, slot.StartTime)">
                                 </td>
                             }
@@ -51,6 +53,11 @@
     </div>
 </div>
 
+<BookingPopup 
+    Visible="showPopup"
+    CurrentStatus="selectedStatus"
+    OnStatusSelected="HandlePopupResult" />
+
 @code {
     private DateTime Today = DateTime.Today;
     private DateTime StartOfWeek;
@@ -58,6 +65,11 @@
     private List<DateTime> DaysOfWeek = new();
     private List<TimeSlot> TimeSlots = new();
     private List<Booking> AllBookings = new();
+    private bool showPopup = false;
+    private DateTime selectedDay;
+    private TimeSpan selectedTime;
+    private string selectedStatus = "Free";
+    private string selectedUsername = "";
 
 protected override async Task OnInitializedAsync()
 {
@@ -121,41 +133,76 @@ protected override async Task OnInitializedAsync()
         return booking?.Type ?? "Free";  // falls back to "Free" if not found
     }
 
-    private string GetColorForStatus(string status) => status switch
-    {
-        "Free" => "#228B22",   // Forest Green
-        "Private" => "#f08080", // Light red
-        "Open" => "#add8e6",    // Light blue
-        "Blocked" => "#d3d3d3", // Light gray
-        _ => "white"
-    };
-
     private void OpenDay(DateTime day)
     {
         // TODO: Navigate to day view later
         Console.WriteLine($"Clicked on {day.ToShortDateString()}");
     }
-
-    private async Task BookSlot(DateTime day, TimeSpan time)
+    private string CapitalizeFirstLetter(string input)
     {
-        var username = await JS.InvokeAsync<string>("localStorage.getItem", "username");
-        if (string.IsNullOrWhiteSpace(username))
+        return string.IsNullOrEmpty(input) ? input : char.ToUpper(input[0]) + input.Substring(1);
+    }
+
+    private void BookSlot(DateTime day, TimeSpan time)
+    {
+        if (!userSessionService.IsLoggedIn)
         {
             Console.WriteLine("User not logged in. Booking is not allowed.");
-            return; // Exit early if not logged in
+            return;
         }
 
+        var username = userSessionService.Username!;
+
+        var booking = AllBookings.FirstOrDefault(b => b.Date.Date == day.Date && b.StartTime == time);
+        selectedDay = day;
+        selectedTime = time;
+        selectedStatus = booking?.Type ?? "Free";
+        selectedUsername = booking?.Username ?? "";
+        showPopup = true;
+    }
+
+    private async Task HandlePopupResult(string? newStatus)
+    {
+        showPopup = false;
+
+        // Cancel or no change
+        if (string.IsNullOrWhiteSpace(newStatus) || newStatus == selectedStatus)
+            return;
+
+        var username = userSessionService.Username;
+        if (string.IsNullOrWhiteSpace(username))
+            return;
+
+        // Unbook (status is Free)
+        if (newStatus == "Free")
+        {
+            var existing = AllBookings.FirstOrDefault(b => b.Date == selectedDay && b.StartTime == selectedTime);
+            if (existing != null)
+            {
+                var response = await Http.DeleteAsync($"/bookings/{existing.Date:yyyy-MM-dd}/{existing.StartTime}");
+                if (response.IsSuccessStatusCode)
+                {
+                    AllBookings.Remove(existing);
+                    StateHasChanged();
+                }
+            }
+            return;
+        }
+
+        // Book or rebook
         var newBooking = new Booking
         {
-            Date = day,
-            StartTime = time,
+            Date = selectedDay,
+            StartTime = selectedTime,
             Username = username,
-            Type = "Private" // TEMP: always book private
+            Type = newStatus
         };
 
-        var response = await Http.PostAsJsonAsync("/bookings", newBooking);
-        if (response.IsSuccessStatusCode)
+        var postResponse = await Http.PostAsJsonAsync("/bookings", newBooking);
+        if (postResponse.IsSuccessStatusCode)
         {
+            // Remove old and add new
+            AllBookings.RemoveAll(b => b.Date == selectedDay && b.StartTime == selectedTime);
             AllBookings.Add(newBooking);
             StateHasChanged();
         }
@@ -165,11 +212,6 @@ protected override async Task OnInitializedAsync()
     {
         public string Label { get; set; } = "";
         public TimeSpan StartTime { get; set; }
-    }
-
-    private string CapitalizeFirstLetter(string input)
-    {
-        return string.IsNullOrEmpty(input) ? input : char.ToUpper(input[0]) + input.Substring(1);
     }
 
     public class Booking
