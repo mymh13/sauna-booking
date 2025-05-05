@@ -34,11 +34,11 @@ builder.Services.AddControllers();
 // Build the app
 var app = builder.Build();
 
-// Use Services
-app.UseCors("MyCorsPolicy"); // Explicitly apply the named policy, i.e do not use the default
+app.UseRouting();
+app.UseCors("MyCorsPolicy");
 app.MapControllers();
 
-// Development: a root Hello World endpoint for health check
+// Optional: test endpoint
 app.MapGet("/", () => Results.Ok("Hello World!"));
 
 app.Run();

@@ -6,7 +6,7 @@ using SaunaBooking.Api.Models;
 namespace SaunaBooking.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("bookings")]
     public class BookingsController : ControllerBase
     {
         private readonly SaunaBookingDbContext _dbContext;
