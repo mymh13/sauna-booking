@@ -39,18 +39,22 @@ namespace SaunaBooking.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] Booking booking)
         {
-            // Simple check for duplicates (you can expand this)
+            Console.WriteLine($"Received booking from {booking.Username} on {booking.Date} at {booking.StartTime}");
+
             bool exists = await _dbContext.Bookings.AnyAsync(b =>
                 b.Date.Date == booking.Date.Date &&
                 b.StartTime == booking.StartTime);
 
             if (exists)
             {
+                Console.WriteLine("Conflict: Slot already booked.");
                 return Conflict("Slot already booked.");
             }
 
             _dbContext.Bookings.Add(booking);
             await _dbContext.SaveChangesAsync();
+
+            Console.WriteLine("Booking saved.");
             return CreatedAtAction(nameof(GetBookings), new { booking.Date, booking.StartTime }, booking);
         }
     }
