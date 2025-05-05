@@ -2,4 +2,19 @@
 
 <h1>Dashboard</h1>
 
-<p>Välkommen till din användarpanel!</p>
+<p>Välkommen till din användarsida!</p>
+
+<div class="nav-center">
+    @if (!string.IsNullOrEmpty(LoggedInUsername))
+    {
+        <span class="nav-user">Inloggad som: @LoggedInUsername</span>
+    }
+</div>
+
+<div class="nav-center">
+    @if (!string.IsNullOrEmpty(LoggedInUsername))
+    {
+        <button class="nav-button" @onclick="Logout">Logga ut</button>
+    }
+    <button class="nav-button" @onclick="ToggleTheme">@CurrentThemeLabel</button>
+</div>

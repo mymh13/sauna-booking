@@ -12,11 +12,6 @@
         <div class="mobile-only w-full flex justify-between items-center px-4">
             <button class="nav-button" @onclick="ToggleMobileMenu">☰ Meny</button>
             <button class="nav-button" @onclick="ToggleTheme">@CurrentThemeLabel</button>
-            <button class="nav-button" @onclick="Logout">Logga ut</button>
-             @if (!string.IsNullOrEmpty(LoggedInUsername))
-            {
-                <button class="nav-button" @onclick="Logout">Logga ut</button>
-            }
         </div>
 
         @if (ShowMobileMenu)
