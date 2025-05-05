@@ -12,10 +12,10 @@
         <!-- Mobile: hamburger + theme button side by side -->
         <div class="mobile-only w-full flex justify-between items-center px-4">
             <button class="nav-button" @onclick="ToggleMobileMenu">☰ Meny</button>
-            <button class="nav-button" @onclick="ToggleTheme">@CurrentThemeLabel</button>
+            <button class="nav-button" @onclick="ToggleTheme">@Session.ThemeLabel</button>
         </div>
 
-        @if (ShowMobileMenu)
+        @if (Session.ShowMobileMenu)
         {
             <div class="mobile-only mobile-menu text-center mt-2">
                 <NavLink href="calendar" class="nav-link uppercase block">Kalender</NavLink>
@@ -41,21 +41,19 @@
 </nav>
 
 @code {
-    private bool ShowMobileMenu = false;
-
-    protected override void OnInitialized()
-    {
-        // Nothing needed if Session is used for state
-    }
-
     private void Logout()
     {
-        Session.Username = null;
-        Navigation.NavigateTo("/"); // or login page
+        Session.Logout();
+        Navigation.NavigateTo("/");
     }
 
     private void ToggleTheme()
     {
         Session.ToggleTheme();
+    }
+
+    private void ToggleMobileMenu()
+    {
+        Session.ToggleMobileMenu();
     }
 }

@@ -1,4 +1,4 @@
-using client.Models;
+using SaunaBooking.Client.Models;
 using System.Net.Http.Json;
 
 namespace SaunaBooking.Client.Services
@@ -43,6 +43,13 @@ namespace SaunaBooking.Client.Services
         {
             Username = null;
             Role = null;
+        }
+
+        public bool ShowMobileMenu { get; private set; } = false;
+
+        public void ToggleMobileMenu()
+        {
+            ShowMobileMenu = !ShowMobileMenu;
         }
     }
 }

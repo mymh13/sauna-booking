@@ -1,4 +1,4 @@
-namespace client.Models
+namespace SaunaBooking.Client.Models
 {
     public class LoginRequest
     {
