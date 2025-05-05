@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@inject SaunaBooking.Client.Services.UserSessionService Session
 
-<div class="layout-container @ThemeClass">
+<div class="layout-container @(Session.ThemeLabel == "dark" ? "dark-mode" : "light-mode")">
     <header class="header">
         <NavMenu />
     </header>
@@ -16,26 +17,3 @@
         </p>
     </footer>
 </div>
-
-@code {
-    private bool IsDarkMode = false;
-
-    private string ThemeClass => IsDarkMode ? "dark-mode" : "light-mode";
-
-    protected override async Task OnInitializedAsync()
-    {
-        var theme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
-        if (theme == "dark")
-        {
-            IsDarkMode = true;
-        }
-    }
-
-    private async Task ToggleTheme()
-    {
-        IsDarkMode = !IsDarkMode;
-        await JS.InvokeVoidAsync("localStorage.setItem", "theme", IsDarkMode ? "dark" : "light");
-    }
-
-    [Inject] private IJSRuntime JS { get; set; } = default!;
-}

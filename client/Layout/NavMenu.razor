@@ -1,5 +1,6 @@
 ﻿@inject IJSRuntime JS
 @inject NavigationManager Navigation
+@inject SaunaBooking.Client.Services.UserSessionService Session
 
 <nav class="nav-menu">
     <div class="nav-container">
@@ -23,62 +24,38 @@
         }
 
         <div class="nav-center desktop-only">
-            @if (!string.IsNullOrEmpty(LoggedInUsername))
+            @if (!string.IsNullOrEmpty(Session.Username))
             {
-                <span class="nav-user">Inloggad som: @LoggedInUsername</span>
+                <span class="nav-user">Inloggad som: @Session.Username</span>
             }
         </div>
 
         <div class="nav-right desktop-only">
-            @if (!string.IsNullOrEmpty(LoggedInUsername))
+            @if (!string.IsNullOrEmpty(Session.Username))
             {
                 <button class="nav-button" @onclick="Logout">Logga ut</button>
             }
-            <button class="nav-button" @onclick="ToggleTheme">@CurrentThemeLabel</button>
+            <button class="nav-button" @onclick="ToggleTheme">@Session.ThemeLabel</button>
         </div>
     </div>
 </nav>
 
 @code {
-    private string? LoggedInUsername;
-    private string CurrentThemeLabel = "Mörkt läge";
     private bool ShowMobileMenu = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        LoggedInUsername = await JS.InvokeAsync<string>("localStorage.getItem", "username");
-
-        var theme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
-        CurrentThemeLabel = theme == "light" ? "Mörkt läge" : "Ljust läge";
+        // Nothing needed if Session is used for state
     }
 
-    private async Task Logout()
+    private void Logout()
     {
-        await JS.InvokeVoidAsync("localStorage.removeItem", "username");
-        await JS.InvokeVoidAsync("localStorage.removeItem", "role");
-        LoggedInUsername = null;
-        Navigation.NavigateTo("/sauna/");
+        Session.Username = null;
+        Navigation.NavigateTo("/"); // or login page
     }
 
-    private async Task ToggleTheme()
+    private void ToggleTheme()
     {
-        var currentTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
-        if (currentTheme == "light")
-        {
-            await JS.InvokeVoidAsync("localStorage.setItem", "theme", "dark");
-            CurrentThemeLabel = "Ljust läge";
-        }
-        else
-        {
-            await JS.InvokeVoidAsync("localStorage.setItem", "theme", "light");
-            CurrentThemeLabel = "Mörkt läge";
-        }
-
-        await JS.InvokeVoidAsync("location.reload");
-    }
-
-    private void ToggleMobileMenu()
-    {
-        ShowMobileMenu = !ShowMobileMenu;
+        Session.ToggleTheme();
     }
 }
