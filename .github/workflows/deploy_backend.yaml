@@ -30,7 +30,7 @@ jobs:
 
     - name: Deploy API to Hetzner
       run: |
-        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./publish/ saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/api/
+        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./publish/ saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/api/publish/
 
     - name: Restart API (SSH)
       run: |
