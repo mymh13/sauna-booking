@@ -6,12 +6,17 @@ namespace SaunaBooking.Client.Services
     public class UserSessionService
     {
         private readonly HttpClient _http;
-        public string? Username { get; set; }
-        public string? Role { get; set; }
-        public bool IsDarkMode { get; set; } = false;
+
+        public string? Username { get; private set; }
+        public string? Role { get; private set; }
+        public bool IsDarkMode { get; private set; } = false;
+        public bool ShowMobileMenu { get; private set; } = false;
+        public bool IsMobileLayout { get; private set; } = false;
 
         public string ThemeLabel => IsDarkMode ? "Ljust läge" : "Mörkt läge";
         public string Theme => IsDarkMode ? "dark" : "light";
+
+        public event Action? OnChange;
 
         public UserSessionService(HttpClient http)
         {
@@ -29,27 +34,37 @@ namespace SaunaBooking.Client.Services
             {
                 Username = request.Username;
                 Role = result.Role;
+                NotifyStateChanged();
             }
 
             return result ?? new LoginResponse { Success = false, Message = "Okänt fel." };
-        }
-
-        public void ToggleTheme()
-        {
-            IsDarkMode = !IsDarkMode;
         }
 
         public void Logout()
         {
             Username = null;
             Role = null;
+            NotifyStateChanged();
         }
 
-        public bool ShowMobileMenu { get; private set; } = false;
+        public void ToggleTheme()
+        {
+            IsDarkMode = !IsDarkMode;
+            NotifyStateChanged();
+        }
 
         public void ToggleMobileMenu()
         {
             ShowMobileMenu = !ShowMobileMenu;
+            NotifyStateChanged();
         }
+
+        public void SetMobileLayout(bool isMobile)
+        {
+            IsMobileLayout = isMobile;
+            NotifyStateChanged();
+        }
+
+        private void NotifyStateChanged() => OnChange?.Invoke();
     }
 }

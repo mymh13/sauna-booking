@@ -1,101 +1,107 @@
 .nav-menu {
-    background-color: transparent;
-    width: 100%;
-    padding: 1rem;
+  background-color: transparent;
+  width: 100%;
+  padding: 1rem;
 }
 
 .nav-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center; /* 💡 Center all content horizontally */
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-    gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  gap: 1rem;
 }
 
 .nav-left,
 .nav-right {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    justify-content: center; /* 💡 center each subsection */
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
 }
 
-.nav-link, .nav-button, .nav-user {
-    font-size: 1rem;
-    color: inherit;
-    text-decoration: none;
+.nav-link,
+.nav-button,
+.nav-user {
+  font-size: 1rem;
+  color: inherit;
+  text-decoration: none;
 }
 
 .nav-link.active {
-    font-weight: bold;
-    text-decoration: underline;
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 .nav-link:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .nav-button {
-    border: 1px solid white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 5px;
-    background: transparent;
+  border: 1px solid white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 5px;
+  background: transparent;
+  transition: background-color 0.2s ease;
 }
 
-/* Show/hide sections based on screen width */
+.nav-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Desktop / Mobile toggles */
 .desktop-only {
-    display: flex;
-  }
-  
-  .mobile-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Centered content */
+.nav-center {
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .desktop-only {
     display: none;
   }
-  
-  /* Center username block */
-  .nav-center {
-    text-align: center;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 0.9rem;
-  }
-  
-  /* Responsive styles */
-  @media (max-width: 640px) {
-    .desktop-only {
-      display: none;
-    }
-  
-    .mobile-only {
-      display: block;
-    }
 
-    .mobile-only .nav-button {
-      margin: 0.25rem;
-    }    
-  
-    .mobile-menu .nav-link {
-      display: block;
-      margin: 0.25rem 0;
-    }
-  
-    .nav-container {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .nav-right {
-      justify-content: center;
-      margin-left: 0;
-      width: 100%;
-    }
-  
-    .nav-center {
-      padding: 0.5rem 0;
-    }
-  }  
+  .mobile-only {
+    display: block;
+  }
+
+  .mobile-only .nav-button {
+    margin: 0.25rem;
+  }
+
+  .mobile-menu .nav-link {
+    display: block;
+    margin: 0.25rem 0;
+  }
+
+  .nav-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav-right {
+    justify-content: center;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .nav-center {
+    padding: 0.5rem 0;
+  }
+}

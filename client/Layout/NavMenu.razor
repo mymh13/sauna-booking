@@ -1,59 +1,74 @@
-﻿@inject IJSRuntime JS
-@inject NavigationManager Navigation
+﻿@inject NavigationManager Navigation
 @inject SaunaBooking.Client.Services.UserSessionService Session
 
 <nav class="nav-menu">
     <div class="nav-container">
+        <!-- Desktop navigation links -->
         <div class="nav-left desktop-only">
             <NavLink href="calendar" class="nav-link uppercase" Match="NavLinkMatch.All">KALENDER</NavLink>
             <NavLink href="dashboard" class="nav-link uppercase" Match="NavLinkMatch.All">MINA SIDOR</NavLink>
         </div>
 
-        <!-- Mobile: hamburger + theme button side by side -->
+        <!-- Mobile: hamburger + login or theme toggle -->
         <div class="mobile-only w-full flex justify-between items-center px-4">
             <button class="nav-button" @onclick="ToggleMobileMenu">☰ Meny</button>
-            <button class="nav-button" @onclick="ToggleTheme">@Session.ThemeLabel</button>
+
+            @if (string.IsNullOrEmpty(Session.Username))
+            {
+                <NavLink href="login" class="nav-button">Logga in</NavLink>
+            }
+            else
+            {
+                <button class="nav-button" @onclick="ToggleTheme">@Session.ThemeLabel</button>
+            }
         </div>
 
+        <!-- Mobile menu dropdown -->
         @if (Session.ShowMobileMenu)
         {
             <div class="mobile-only mobile-menu text-center mt-2">
                 <NavLink href="calendar" class="nav-link uppercase block">Kalender</NavLink>
                 <NavLink href="dashboard" class="nav-link uppercase block">Dashboard</NavLink>
+
+                @if (!string.IsNullOrEmpty(Session.Username))
+                {
+                    <button class="nav-button mt-2" @onclick="Logout">Logga ut</button>
+                }
             </div>
         }
 
-        <div class="nav-center desktop-only">
-            @if (!string.IsNullOrEmpty(Session.Username))
-            {
-                <span class="nav-user">Inloggad som: @Session.Username</span>
-            }
-        </div>
-
+        <!-- Desktop login/logout + theme toggle -->
         <div class="nav-right desktop-only">
-            @if (!string.IsNullOrEmpty(Session.Username))
+            @if (string.IsNullOrEmpty(Session.Username))
+            {
+                <NavLink href="login" class="nav-link">Logga in</NavLink>
+            }
+            else
             {
                 <button class="nav-button" @onclick="Logout">Logga ut</button>
             }
+
             <button class="nav-button" @onclick="ToggleTheme">@Session.ThemeLabel</button>
         </div>
     </div>
 </nav>
 
 @code {
+    protected override void OnInitialized()
+    {
+        Session.OnChange += StateHasChanged;
+    }
+
+    private void ToggleTheme() => Session.ToggleTheme();
+    private void ToggleMobileMenu() => Session.ToggleMobileMenu();
     private void Logout()
     {
         Session.Logout();
         Navigation.NavigateTo("/");
     }
 
-    private void ToggleTheme()
+    public void Dispose()
     {
-        Session.ToggleTheme();
-    }
-
-    private void ToggleMobileMenu()
-    {
-        Session.ToggleMobileMenu();
+        Session.OnChange -= StateHasChanged;
     }
 }

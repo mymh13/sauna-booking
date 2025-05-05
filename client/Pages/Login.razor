@@ -2,7 +2,7 @@
 @using SaunaBooking.Client.Services
 @using SaunaBooking.Client.Models
 
-@inject SaunaBooking.Client.Services.UserSessionService Session
+@inject UserSessionService Session
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
@@ -44,14 +44,7 @@
 
         if (result.Success)
         {
-            // Save username and role to localStorage
-            await JS.InvokeVoidAsync("localStorage.setItem", "username", LoginModel.Username);
-            await JS.InvokeVoidAsync("localStorage.setItem", "role", result.Role);
-
-            // Optional: Show welcome alert
             await JS.InvokeVoidAsync("alert", $"Välkommen {LoginModel.Username}!");
-
-            // Redirect to Calendar (or just home)
             Navigation.NavigateTo("dashboard");
         }
         else

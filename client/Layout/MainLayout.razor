@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject SaunaBooking.Client.Services.UserSessionService Session
 
-<div class="layout-container @(Session.ThemeLabel == "dark" ? "dark-mode" : "light-mode")">
+<div class="layout-container @(Session.Theme == "dark" ? "dark-mode" : "light-mode")">
     <header class="header">
         <NavMenu />
     </header>
@@ -17,3 +17,15 @@
         </p>
     </footer>
 </div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Session.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        Session.OnChange -= StateHasChanged;
+    }
+}
