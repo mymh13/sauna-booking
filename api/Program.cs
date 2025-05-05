@@ -42,4 +42,17 @@ app.MapControllers();
 app.MapGet("/", () => Results.Ok("Hello World!"));
 app.MapGet("/test", () => "API OK");
 
+app.MapGet("/db-check", async (SaunaBookingDbContext db) =>
+{
+    try
+    {
+        var count = await db.Bookings.CountAsync();
+        return Results.Ok($"Bookings table has {count} rows.");
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem("DB ERROR: " + ex.Message);
+    }
+});
+
 app.Run();

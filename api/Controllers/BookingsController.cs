@@ -20,18 +20,18 @@ namespace SaunaBooking.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Booking>>> GetBookings()
         {
-            Console.WriteLine("GET /bookings hit");
+            Console.WriteLine(">>> [GET] /bookings endpoint HIT!");
 
             try
             {
                 var results = await _dbContext.Bookings.ToListAsync();
-                Console.WriteLine($"Returned {results.Count} bookings");
+                Console.WriteLine($">>> [GET] Retrieved {results.Count} bookings from DB");
                 return results;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERROR in /bookings: {ex.Message}");
-                return StatusCode(500, "Internal server error");
+                Console.WriteLine($">>> [GET] ERROR: {ex.Message}");
+                return StatusCode(500, "Internal Server Error");
             }
         }
 
