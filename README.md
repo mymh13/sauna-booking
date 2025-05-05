@@ -83,7 +83,7 @@ sauna-booking/                          Root folder of the project/repository (m
 │   ├── Properties/
 │   │   └── launchSettings.json         Frontend local development server profiles
 │   ├── Services/
-│   │   └── AuthService.cs              Client-side service to send login requests and receive responses
+│   │   └── UserSessionService.cs       TODO:
 │   ├── wwwroot/
 │   │   ├── css/
 │   │   │   └── app.css                 General site-wide frontend styles
