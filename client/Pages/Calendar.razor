@@ -63,7 +63,7 @@ protected override async Task OnInitializedAsync()
 {
     CalculateWeek(Today);
     GenerateTimeSlots();
-    AllBookings = await Http.GetFromJsonAsync<List<Booking>>("bookings") ?? new();
+    AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
 }
 
     private void CalculateWeek(DateTime referenceDate)
@@ -153,7 +153,7 @@ protected override async Task OnInitializedAsync()
             Type = "Private" // TEMP: always book private
         };
 
-        var response = await Http.PostAsJsonAsync("bookings", newBooking);
+        var response = await Http.PostAsJsonAsync("/bookings", newBooking);
         if (response.IsSuccessStatusCode)
         {
             AllBookings.Add(newBooking);
