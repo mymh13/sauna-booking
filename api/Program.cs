@@ -70,4 +70,10 @@ app.MapGet("/db-check", async (SaunaBookingDbContext db) =>
     }
 });
 
+app.MapGet("/migrations", async (SaunaBookingDbContext db) =>
+{
+    var migrations = await db.Database.GetAppliedMigrationsAsync();
+    return Results.Ok(migrations);
+});
+
 app.Run();
