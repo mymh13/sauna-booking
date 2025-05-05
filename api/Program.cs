@@ -42,6 +42,14 @@ app.MapControllers();
 app.MapGet("/", () => Results.Ok("Hello World!"));
 app.MapGet("/test", () => "API OK");
 
+app.MapPost("/debug-booking", async (HttpRequest request) =>
+{
+    using var reader = new StreamReader(request.Body);
+    var body = await reader.ReadToEndAsync();
+    Console.WriteLine("Raw body: " + body);
+    return Results.Ok("Debug endpoint received something");
+});
+
 app.MapGet("/db-check", async (SaunaBookingDbContext db) =>
 {
     try
