@@ -63,4 +63,11 @@ app.MapGet("/db-check", async (SaunaBookingDbContext db) =>
     }
 });
 
+// Apply any pending migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<SaunaBookingDbContext>();
+    db.Database.Migrate();
+}
+
 app.Run();
