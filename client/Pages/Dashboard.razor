@@ -1,6 +1,7 @@
 @page "/dashboard"
 @using SaunaBooking.Client.Services
 @inject UserSessionService Session
+@inject NavigationManager Navigation
 
 <h1>Dashboard</h1>
 
@@ -8,21 +9,18 @@
 
 @if (!string.IsNullOrEmpty(Session.Username))
 {
-    <span class="nav-user">Inloggad som: @Session.Username</span>
-    <button class="nav-button" @onclick="Logout">Logga ut</button>
+    <div class="nav-center mb-2">
+        <span class="nav-user">Inloggad som: @Session.Username</span>
+    </div>
+    <div class="nav-center">
+        <button class="nav-button" @onclick="Logout">Logga ut</button>
+    </div>
 }
-
-<button class="nav-button" @onclick="ToggleTheme">@Session.ThemeLabel</button>
 
 @code {
     private void Logout()
     {
-        Session.Username = null;
-        // Navigate to login or homepage
-    }
-
-    private void ToggleTheme()
-    {
-        Session.ToggleTheme();
+        Session.Logout();
+        Navigation.NavigateTo("/");
     }
 }
