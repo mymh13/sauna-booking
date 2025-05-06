@@ -12,6 +12,10 @@
     <div class="nav-center mb-2">
         <span class="nav-user">Inloggad som: @Session.Username</span>
     </div>
+    <div class="nav-center mt-4 space-x-4">
+        <NavLink href="calendar" class="nav-link uppercase">KALENDER</NavLink>
+        <NavLink href="dashboard" class="nav-link uppercase">MINA SIDOR</NavLink>
+    </div>
     <div class="nav-center">
         <button class="nav-button" @onclick="Logout">Logga ut</button>
     </div>
@@ -21,6 +25,6 @@
     private void Logout()
     {
         Session.Logout();
-        Navigation.NavigateTo("/");
+        Navigation.NavigateTo("/sauna/calendar");
     }
 }
