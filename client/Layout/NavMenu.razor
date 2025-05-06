@@ -64,7 +64,7 @@
     private void Logout()
     {
         Session.Logout();
-        Navigation.NavigateTo("/");
+        Navigation.NavigateTo("/calendar", forceLoad: true);
     }
 
     public void Dispose()

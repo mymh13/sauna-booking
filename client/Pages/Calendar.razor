@@ -49,6 +49,10 @@
                     }
                 </tbody>
             </table>
+            @if (!string.IsNullOrWhiteSpace(bookingMessage))
+            {
+                <div class="mt-4 text-red-600 text-center font-semibold">@bookingMessage</div>
+            }
         </div>
     </div>
 </div>
@@ -70,6 +74,7 @@
     private TimeSpan selectedTime;
     private string selectedStatus = "Free";
     private string selectedUsername = "";
+    private string bookingMessage = "";
 
 protected override async Task OnInitializedAsync()
 {
@@ -145,13 +150,14 @@ protected override async Task OnInitializedAsync()
 
     private void BookSlot(DateTime day, TimeSpan time)
     {
-        if (!userSessionService.IsLoggedIn)
+        if (!userSessionService.IsLoggedIn || string.IsNullOrWhiteSpace(userSessionService.Username))
         {
-            Console.WriteLine("User not logged in. Booking is not allowed.");
+            bookingMessage = "Du måste vara inloggad för att boka en tid.";
             return;
         }
 
         var username = userSessionService.Username!;
+        bookingMessage = "";
 
         var booking = AllBookings.FirstOrDefault(b => b.Date.Date == day.Date && b.StartTime == time);
         selectedDay = day;
