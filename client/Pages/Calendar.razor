@@ -64,9 +64,10 @@
     OnStatusSelected="HandlePopupResult" />
 
 @code {
-    private DateTime Today => TimeZoneInfo
+    private DateTime DisplayedDate = TimeZoneInfo
     .ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"))
     .Date;
+    private DateTime Today => DisplayedDate;
     private DateTime StartOfWeek;
     private DateTime EndOfWeek;
     private List<DateTime> DaysOfWeek = new();
@@ -81,9 +82,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        CalculateWeek(Today);
+        CalculateWeek(DisplayedDate);
         GenerateTimeSlots();
-        Console.WriteLine($"[Init] Local Swedish Today = {Today:yyyy-MM-dd}");
+        Console.WriteLine($"[Init] Local Swedish Today = {DisplayedDate:yyyy-MM-dd}");
         await RefreshBookingsAsync();
     }
 
@@ -97,14 +98,14 @@
 
     private void PreviousWeek()
     {
-        Today = Today.AddDays(-7);
-        CalculateWeek(Today);
+        DisplayedDate = DisplayedDate.AddDays(-7);
+        CalculateWeek(DisplayedDate);
     }
 
     private void NextWeek()
     {
-        Today = Today.AddDays(7);
-        CalculateWeek(Today);
+        DisplayedDate = DisplayedDate.AddDays(7);
+        CalculateWeek(DisplayedDate);
     }
 
     private int CurrentWeekNumber
