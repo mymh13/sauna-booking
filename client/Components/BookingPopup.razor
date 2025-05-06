@@ -1,3 +1,4 @@
+@namespace SaunaBooking.Client.Components
 @using SaunaBooking.Client.Services
 @code {
     [Parameter] public bool Visible { get; set; }
@@ -5,11 +6,6 @@
     [Parameter] public EventCallback<string?> OnStatusSelected { get; set; }
 
     private string selectedStatus = "Private";
-
-    private void Confirm()
-    {
-        OnStatusSelected.InvokeAsync(selectedStatus);
-    }
 
     private void Unbook()
     {
