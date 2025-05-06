@@ -81,12 +81,7 @@
     {
         CalculateWeek(Today);
         GenerateTimeSlots();
-        AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
-        AllBookings = AllBookings
-            .Select(b => {
-                b.Date = b.Date.Date; // Normalize to midnight, strip 22:00 etc
-                return b;
-            }).ToList();
+        await RefreshBookingsAsync();
     }
 
     private void CalculateWeek(DateTime referenceDate)
@@ -182,6 +177,12 @@
         showPopup = true;
     }
 
+    private async Task RefreshBookingsAsync()
+    {
+        AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
+        AllBookings = AllBookings.Select(b => { b.Date = b.Date.Date; return b; }).ToList();
+    }
+
     private async Task HandlePopupResult(string? newStatus)
     {
         showPopup = false;
@@ -198,8 +199,7 @@
         if (newStatus == "Free")
         {
             Console.WriteLine($"[Unbook] Target = {selectedDay:yyyy-MM-dd} {selectedTime}");
-            AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
-            AllBookings = AllBookings.Select(b => { b.Date = b.Date.Date; return b; }).ToList();
+            await RefreshBookingsAsync();
 
             var existing = AllBookings.FirstOrDefault(b =>
                 b.Date.Date == selectedDay.Date && b.StartTime == selectedTime);
@@ -214,8 +214,8 @@
                 if (response.IsSuccessStatusCode)
                 {
                     AllBookings.Remove(existing);
-                    CalculateWeek(Today);
-                    StateHasChanged();
+                    CalculateWeek(DateTime.Today); // Force recalculation based on today's actual value
+                    await InvokeAsync(StateHasChanged); // Re-render
                 }
             }
             return;

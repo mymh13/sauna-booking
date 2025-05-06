@@ -42,6 +42,7 @@ namespace SaunaBooking.Api.Controllers
             Console.WriteLine($"Received booking from {booking.Username} on {booking.Date} at {booking.StartTime}");
 
             booking.Date = booking.Date.Date;
+            booking.StartTime = TimeSpan.FromHours(booking.StartTime.Hours); // Snap to full hour
 
             bool exists = await _dbContext.Bookings.AnyAsync(b =>
                 b.Date.Date == booking.Date.Date &&
