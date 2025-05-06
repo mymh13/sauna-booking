@@ -134,13 +134,17 @@
 
     private string? GetUsernameForSlot(DateTime day, TimeSpan time)
     {
-        var booking = AllBookings.FirstOrDefault(b => b.Date.Date == day.Date && b.StartTime == time);
+        var booking = AllBookings.FirstOrDefault(b =>
+            b.Date.Date == day.Date.Date && b.StartTime == time);
+
         return booking != null && booking.Type != "Free" ? booking.Username : null;
     }
 
     private string GetSlotStatus(DateTime day, TimeSpan time)
     {
-        var booking = AllBookings.FirstOrDefault(b => b.Date.Date == day.Date && b.StartTime == time);
+        var booking = AllBookings.FirstOrDefault(b =>
+            b.Date.Date == day.Date.Date && b.StartTime == time);
+
         return booking?.Type ?? "Free";  // falls back to "Free" if not found
     }
 
@@ -166,8 +170,12 @@
         var username = userSessionService.Username!;
         bookingMessage = "";
 
-        var booking = AllBookings.FirstOrDefault(b => b.Date.Date == day.Date && b.StartTime == time);
-        selectedDay = day;
+        Console.WriteLine($"[BookSlot] Looking for slot at {day:yyyy-MM-dd} {time}");
+
+        var booking = AllBookings.FirstOrDefault(b =>
+            b.Date.Date == day.Date.Date && b.StartTime == time);
+
+        selectedDay = day.Date;
         selectedTime = time;
         selectedStatus = booking?.Type ?? "Free";
         selectedUsername = booking?.Username ?? "";
@@ -189,14 +197,19 @@
         // Unbook (status is Free)
         if (newStatus == "Free")
         {
+            Console.WriteLine($"[Unbook] Target = {selectedDay:yyyy-MM-dd} {selectedTime}");
             AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
             AllBookings = AllBookings.Select(b => { b.Date = b.Date.Date; return b; }).ToList();
-            var existing = AllBookings.FirstOrDefault(b => b.Date == selectedDay && b.StartTime == selectedTime);
+
+            var existing = AllBookings.FirstOrDefault(b =>
+                b.Date.Date == selectedDay.Date && b.StartTime == selectedTime);
 
             if (existing != null)
             {
+                Console.WriteLine($"[Unbook] Found ID = {existing.Date:yyyy-MM-dd} {existing.StartTime}");
                 var dateStr = existing.Date.ToString("yyyy-MM-dd");
-                var timeStr = existing.StartTime.ToString(@"hh\:mm\:ss"); // force fixed format
+                var timeStr = existing.StartTime.ToString(@"hh\:mm\:ss");
+
                 var response = await Http.DeleteAsync($"/bookings/{dateStr}/{timeStr}");
                 if (response.IsSuccessStatusCode)
                 {
