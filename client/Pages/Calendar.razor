@@ -64,9 +64,7 @@
     OnStatusSelected="HandlePopupResult" />
 
 @code {
-    private DateTime Today => TimeZoneInfo
-    .ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"))
-    .Date;
+    private DateTime Today => DateTime.Now.Date;
     private DateTime CurrentViewDate { get; set; }
     private DateTime StartOfWeek;
     private DateTime EndOfWeek;
