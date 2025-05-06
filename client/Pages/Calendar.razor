@@ -67,6 +67,7 @@
     private DateTime Today => TimeZoneInfo
     .ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"))
     .Date;
+    private DateTime CurrentViewDate { get; set; }
     private DateTime StartOfWeek;
     private DateTime EndOfWeek;
     private List<DateTime> DaysOfWeek = new();
@@ -81,7 +82,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        CalculateWeek(Today);
+        CurrentViewDate = Today;
+        CalculateWeek(CurrentViewDate);
         GenerateTimeSlots();
         await RefreshBookingsAsync();
     }
@@ -96,14 +98,14 @@
 
     private void PreviousWeek()
     {
-        Today = Today.AddDays(-7);
-        CalculateWeek(Today);
+        CurrentViewDate = CurrentViewDate.AddDays(-7);
+        CalculateWeek(CurrentViewDate);
     }
 
     private void NextWeek()
     {
-        Today = Today.AddDays(7);
-        CalculateWeek(Today);
+        CurrentViewDate = CurrentViewDate.AddDays(7);
+        CalculateWeek(CurrentViewDate);
     }
 
     private int CurrentWeekNumber
@@ -111,7 +113,7 @@
         get
         {
             var ci = CultureInfo.CurrentCulture;
-            return ci.Calendar.GetWeekOfYear(Today, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            return ci.Calendar.GetWeekOfYear(CurrentViewDate, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
     }
 
