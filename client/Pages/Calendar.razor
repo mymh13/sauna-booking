@@ -184,7 +184,9 @@ protected override async Task OnInitializedAsync()
         // Unbook (status is Free)
         if (newStatus == "Free")
         {
+            AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
             var existing = AllBookings.FirstOrDefault(b => b.Date == selectedDay && b.StartTime == selectedTime);
+            
             if (existing != null)
             {
                 var dateStr = existing.Date.ToString("yyyy-MM-dd");
