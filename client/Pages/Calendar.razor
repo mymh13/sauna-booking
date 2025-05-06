@@ -81,6 +81,7 @@ protected override async Task OnInitializedAsync()
     CalculateWeek(Today);
     GenerateTimeSlots();
     AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
+    showPopup = true; // TODO: TEMP FOR TESTING
 }
 
     private void CalculateWeek(DateTime referenceDate)
@@ -143,6 +144,7 @@ protected override async Task OnInitializedAsync()
         // TODO: Navigate to day view later
         Console.WriteLine($"Clicked on {day.ToShortDateString()}");
     }
+
     private string CapitalizeFirstLetter(string input)
     {
         return string.IsNullOrEmpty(input) ? input : char.ToUpper(input[0]) + input.Substring(1);
