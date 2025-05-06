@@ -64,10 +64,9 @@
     OnStatusSelected="HandlePopupResult" />
 
 @code {
-    private DateTime DisplayedDate = TimeZoneInfo
+    private DateTime Today => TimeZoneInfo
     .ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"))
     .Date;
-    private DateTime Today => DisplayedDate;
     private DateTime StartOfWeek;
     private DateTime EndOfWeek;
     private List<DateTime> DaysOfWeek = new();
@@ -82,9 +81,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        CalculateWeek(DisplayedDate);
+        CalculateWeek(Today);
         GenerateTimeSlots();
-        Console.WriteLine($"[Init] Local Swedish Today = {DisplayedDate:yyyy-MM-dd}");
         await RefreshBookingsAsync();
     }
 
@@ -98,14 +96,14 @@
 
     private void PreviousWeek()
     {
-        DisplayedDate = DisplayedDate.AddDays(-7);
-        CalculateWeek(DisplayedDate);
+        Today = Today.AddDays(-7);
+        CalculateWeek(Today);
     }
 
     private void NextWeek()
     {
-        DisplayedDate = DisplayedDate.AddDays(7);
-        CalculateWeek(DisplayedDate);
+        Today = Today.AddDays(7);
+        CalculateWeek(Today);
     }
 
     private int CurrentWeekNumber
@@ -203,6 +201,8 @@
         if (newStatus == "Free")
         {
             Console.WriteLine($"[Unbook] Target = {selectedDay:yyyy-MM-dd} {selectedTime}");
+            
+            // Refresh first to ensure we have latest data
             await RefreshBookingsAsync();
 
             var existing = AllBookings.FirstOrDefault(b =>
@@ -217,8 +217,8 @@
                 var response = await Http.DeleteAsync($"/bookings/{dateStr}/{timeStr}");
                 if (response.IsSuccessStatusCode)
                 {
-                    await RefreshBookingsAsync(); // Get accurate booking data after delete
-                    await InvokeAsync(StateHasChanged); // Re-render table
+                    // Always refresh from server to ensure consistency
+                    await RefreshBookingsAsync();
                 }
             }
             return;
@@ -236,10 +236,8 @@
         var postResponse = await Http.PostAsJsonAsync("/bookings", newBooking);
         if (postResponse.IsSuccessStatusCode)
         {
-            // Remove old and add new
-            AllBookings.RemoveAll(b => b.Date == selectedDay && b.StartTime == selectedTime);
-            AllBookings.Add(newBooking);
-            StateHasChanged();
+            // Always refresh from server after operations instead of modifying local collection
+            await RefreshBookingsAsync();
         }
     }
 

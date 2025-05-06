@@ -16,15 +16,11 @@ namespace SaunaBooking.Api.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Prevent DateTimeKind=Utc issues on Booking.Date
-            var dateConverter = new ValueConverter<DateTime, DateTime>(
-                v => DateTime.SpecifyKind(v, DateTimeKind.Unspecified), // Save as unspecified
-                v => DateTime.SpecifyKind(v, DateTimeKind.Unspecified)  // Load as unspecified
-            );
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Booking>()
-                .Property(b => b.Date)
-                .HasConversion(dateConverter);
+                .HasIndex(b => new { b.Date, b.StartTime })
+                .IsUnique();
         }
     }
 }
