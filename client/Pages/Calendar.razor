@@ -201,6 +201,7 @@
                 if (response.IsSuccessStatusCode)
                 {
                     AllBookings.Remove(existing);
+                    CalculateWeek(Today);
                     StateHasChanged();
                 }
             }
