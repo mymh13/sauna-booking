@@ -41,6 +41,8 @@ namespace SaunaBooking.Api.Controllers
         {
             Console.WriteLine($"Received booking from {booking.Username} on {booking.Date} at {booking.StartTime}");
 
+            booking.Date = booking.Date.Date;
+
             bool exists = await _dbContext.Bookings.AnyAsync(b =>
                 b.Date.Date == booking.Date.Date &&
                 b.StartTime == booking.StartTime);
@@ -68,6 +70,9 @@ namespace SaunaBooking.Api.Controllers
                 .FirstOrDefault(b =>
                     b.Date.Date == date.Date &&
                     b.StartTime.ToString(@"hh\:mm\:ss") == startTime.ToString(@"hh\:mm\:ss"));
+                // .FirstOrDefaultAsync(b =>
+                //     b.Date == date &&
+                //     b.StartTime == startTime);
 
             if (booking == null)
             {
