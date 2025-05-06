@@ -82,7 +82,6 @@ protected override async Task OnInitializedAsync()
     CalculateWeek(Today);
     GenerateTimeSlots();
     AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
-    showPopup = true; // TODO: TEMP FOR TESTING
 }
 
     private void CalculateWeek(DateTime referenceDate)
