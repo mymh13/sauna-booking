@@ -60,29 +60,24 @@ namespace SaunaBooking.Api.Controllers
             return CreatedAtAction(nameof(GetBookings), new { booking.Date, booking.StartTime }, booking);
         }
 
+        // DELETE /bookings/{date}/{startTime}
         [HttpDelete("{date}/{startTime}")]
         public async Task<IActionResult> Delete(DateTime date, TimeSpan startTime)
         {
-            Console.WriteLine($">>> [DELETE] Request received for {date:yyyy-MM-dd} at {startTime}");
+            Console.WriteLine($">>> [DELETE] Requested date: {date:yyyy-MM-dd} time: {startTime}");
 
-            var booking = _dbContext.Bookings
-                .AsEnumerable() // Pulls into memory so we can compare manually
-                .FirstOrDefault(b =>
-                    b.Date.Date == date.Date &&
-                    b.StartTime.ToString(@"hh\:mm\:ss") == startTime.ToString(@"hh\:mm\:ss"));
-                // .FirstOrDefaultAsync(b =>
-                //     b.Date == date &&
-                //     b.StartTime == startTime);
+            var booking = await _dbContext.Bookings
+                .FirstOrDefaultAsync(b => b.Date == date && b.StartTime == startTime);
 
             if (booking == null)
             {
-                Console.WriteLine(">>> [DELETE] No matching booking found.");
+                Console.WriteLine($">>> [DELETE] No match found.");
                 return NotFound();
             }
 
+            Console.WriteLine($">>> [DELETE] Found booking with ID {booking.Id}, deleting.");
             _dbContext.Bookings.Remove(booking);
             await _dbContext.SaveChangesAsync();
-            Console.WriteLine(">>> [DELETE] Booking deleted.");
             return NoContent();
         }
     }
