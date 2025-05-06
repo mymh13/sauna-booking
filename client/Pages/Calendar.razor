@@ -64,7 +64,9 @@
     OnStatusSelected="HandlePopupResult" />
 
 @code {
-    private DateTime Today = DateTime.Today;
+    private DateTime Today => TimeZoneInfo
+    .ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"))
+    .Date;
     private DateTime StartOfWeek;
     private DateTime EndOfWeek;
     private List<DateTime> DaysOfWeek = new();
@@ -81,6 +83,7 @@
     {
         CalculateWeek(Today);
         GenerateTimeSlots();
+        Console.WriteLine($"[Init] Local Swedish Today = {Today:yyyy-MM-dd}");
         await RefreshBookingsAsync();
     }
 
