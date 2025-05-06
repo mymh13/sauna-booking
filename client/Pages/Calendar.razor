@@ -187,7 +187,10 @@ protected override async Task OnInitializedAsync()
             var existing = AllBookings.FirstOrDefault(b => b.Date == selectedDay && b.StartTime == selectedTime);
             if (existing != null)
             {
-                var response = await Http.DeleteAsync($"/bookings/{existing.Date:yyyy-MM-dd}/{existing.StartTime}");
+                Console.WriteLine($"Attempting DELETE /bookings/{dateStr}/{timeStr}"); // TODO: Test line for confirmation
+                var dateStr = existing.Date.ToString("yyyy-MM-dd");
+                var timeStr = existing.StartTime.ToString(@"hh\:mm\:ss"); // force fixed format
+                var response = await Http.DeleteAsync($"/bookings/{dateStr}/{timeStr}");
                 if (response.IsSuccessStatusCode)
                 {
                     AllBookings.Remove(existing);
