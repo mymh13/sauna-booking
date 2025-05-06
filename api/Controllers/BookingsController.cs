@@ -63,9 +63,9 @@ namespace SaunaBooking.Api.Controllers
         {
             Console.WriteLine($">>> [DELETE] Request received for {date:yyyy-MM-dd} at {startTime}");
 
-            var booking = await _dbContext.Bookings
+            var booking = _dbContext.Bookings
                 .AsEnumerable() // Pulls into memory so we can compare manually
-                .FirstOrDefaultAsync(b =>
+                .FirstOrDefault(b =>
                     b.Date.Date == date.Date &&
                     b.StartTime.ToString(@"hh\:mm\:ss") == startTime.ToString(@"hh\:mm\:ss"));
 
