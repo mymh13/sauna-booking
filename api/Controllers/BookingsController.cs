@@ -57,5 +57,19 @@ namespace SaunaBooking.Api.Controllers
             Console.WriteLine("Booking saved.");
             return CreatedAtAction(nameof(GetBookings), new { booking.Date, booking.StartTime }, booking);
         }
+
+        [HttpDelete("{date}/{startTime}")]
+        public async Task<IActionResult> Delete(DateTime date, TimeSpan startTime)
+        {
+            var booking = await _dbContext.Bookings
+                .FirstOrDefaultAsync(b => b.Date == date && b.StartTime == startTime);
+
+            if (booking == null)
+                return NotFound();
+
+            _dbContext.Bookings.Remove(booking);
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
