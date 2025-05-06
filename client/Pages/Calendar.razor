@@ -77,12 +77,17 @@
     private string selectedUsername = "";
     private string bookingMessage = "";
 
-protected override async Task OnInitializedAsync()
-{
-    CalculateWeek(Today);
-    GenerateTimeSlots();
-    AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
-}
+    protected override async Task OnInitializedAsync()
+    {
+        CalculateWeek(Today);
+        GenerateTimeSlots();
+        AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
+        AllBookings = AllBookings
+            .Select(b => {
+                b.Date = b.Date.Date; // Normalize to midnight, strip 22:00 etc
+                return b;
+            }).ToList();
+    }
 
     private void CalculateWeek(DateTime referenceDate)
     {
@@ -185,8 +190,9 @@ protected override async Task OnInitializedAsync()
         if (newStatus == "Free")
         {
             AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
+            AllBookings = AllBookings.Select(b => { b.Date = b.Date.Date; return b; }).ToList();
             var existing = AllBookings.FirstOrDefault(b => b.Date == selectedDay && b.StartTime == selectedTime);
-            
+
             if (existing != null)
             {
                 var dateStr = existing.Date.ToString("yyyy-MM-dd");
