@@ -214,7 +214,7 @@
                 if (response.IsSuccessStatusCode)
                 {
                     AllBookings.Remove(existing);
-                    CalculateWeek(DateTime.Today); // Force recalculation based on today's actual value
+                    CalculateWeek(Today); // Use the currently displayed week, not system clock
                     await InvokeAsync(StateHasChanged); // Re-render
                 }
             }
