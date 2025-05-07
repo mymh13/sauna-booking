@@ -35,9 +35,8 @@ jobs:
     - name: Restart API (SSH)
       run: |
         ssh -o StrictHostKeyChecking=no saunadeploy@${{ secrets.HETZNER_HOST }} << 'EOF'
-          # Update JWT key in appsettings.json
-          sudo sed -i "s|\"Key\": \".*\"|\"Key\": \"${{ secrets.JWT_KEY }}\"|" /home/saunadeploy/api/publish/appsettings.json
-          sudo systemctl restart sauna-api.service
+          echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S sed -i "s|\"Key\": \".*\"|\"Key\": \"${{ secrets.JWT_KEY }}\"|" /home/saunadeploy/api/publish/appsettings.json
+          echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S systemctl restart sauna-api.service
           echo "Backend restarted on $(hostname) at $(date)"
           sleep 5
           curl --fail http://localhost:52843/db-check || (echo "Smoke test failed" && exit 1)
