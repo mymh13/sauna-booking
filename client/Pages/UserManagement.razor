@@ -7,16 +7,16 @@
 @inject NavigationManager NavigationManager
 @attribute [Authorize(Roles = "admin")]
 
-<PageTitle>User Management</PageTitle>
+<PageTitle>Hantering av användare</PageTitle>
 
 <div class="container mt-4">
-    <h1>User Management</h1>
+    <h1>Hantering av användare</h1>
 
     @if (_users == null)
     {
         <div class="text-center">
             <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">Laddar sidan...</span>
             </div>
         </div>
     }
@@ -24,7 +24,7 @@
     {
         <div class="mb-3">
             <button class="btn btn-primary" @onclick="() => ShowCreateModal()">
-                <i class="bi bi-plus-circle"></i> Add User
+                <i class="bi bi-plus-circle"></i> Lägg till användare
             </button>
         </div>
 
@@ -33,8 +33,8 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Username</th>
-                        <th>Role</th>
+                        <th>Användarnamn</th>
+                        <th>Roll</th>
                         <th>Actions</th>
                     </tr>
                 </thead>

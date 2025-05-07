@@ -3,7 +3,7 @@
 @inject UserSessionService Session
 @inject NavigationManager Navigation
 
-<h1>Dashboard</h1>
+<h1>Användarsida</h1>
 
 <p>Välkommen till din användarsida!</p>
 
@@ -16,6 +16,11 @@
         <NavLink href="calendar" class="nav-link uppercase">KALENDER</NavLink>
         <NavLink href="dashboard" class="nav-link uppercase">MINA SIDOR</NavLink>
     </div>
+    @if (Session.Role == "admin")
+    {
+        <NavLink href="admin/users" class="nav-link uppercase" Match="NavLinkMatch.All">ANVÄNDARE</NavLink>
+    }
+    <br><br>
     <div class="nav-center">
         <button class="nav-button" @onclick="Logout">Logga ut</button>
     </div>

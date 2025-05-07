@@ -115,4 +115,4 @@ sauna-booking/                          Root folder of the project/repository (m
 ├── LICENSE                             Open-source license for the project
 ├── README.md                           This file: project overview and file structure
 └── sauna-booking.sln                   Visual Studio solution file tying together api/ and client/
-```
+```  
