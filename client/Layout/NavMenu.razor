@@ -7,6 +7,10 @@
         <div class="nav-left desktop-only">
             <NavLink href="calendar" class="nav-link uppercase" Match="NavLinkMatch.All">KALENDER</NavLink>
             <NavLink href="dashboard" class="nav-link uppercase" Match="NavLinkMatch.All">MINA SIDOR</NavLink>
+            @if (Session.Role == "admin")
+            {
+                <NavLink href="admin/users" class="nav-link uppercase" Match="NavLinkMatch.All">ANVÄNDARE</NavLink>
+            }
         </div>
 
         <!-- Mobile: hamburger + login or theme toggle -->
@@ -29,6 +33,10 @@
             <div class="mobile-only mobile-menu text-center mt-2">
                 <NavLink href="calendar" class="nav-link uppercase block">Kalender</NavLink>
                 <NavLink href="dashboard" class="nav-link uppercase block">Dashboard</NavLink>
+                @if (Session.Role == "admin")
+                {
+                    <NavLink href="admin/users" class="nav-link uppercase block">Användare</NavLink>
+                }
 
                 @if (!string.IsNullOrEmpty(Session.Username))
                 {
