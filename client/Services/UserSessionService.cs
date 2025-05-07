@@ -6,6 +6,7 @@ namespace SaunaBooking.Client.Services
     public class UserSessionService
     {
         private readonly HttpClient _http;
+        private string? _token;
 
         public string? Username { get; private set; }
         public string? Role { get; private set; }
@@ -35,6 +36,8 @@ namespace SaunaBooking.Client.Services
             {
                 Username = request.Username;
                 Role = result.Role;
+                _token = result.Token;
+                _http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
                 NotifyStateChanged();
             }
 
@@ -45,6 +48,8 @@ namespace SaunaBooking.Client.Services
         {
             Username = null;
             Role = null;
+            _token = null;
+            _http.DefaultRequestHeaders.Authorization = null;
             NotifyStateChanged();
         }
 
