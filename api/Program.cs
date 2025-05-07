@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using SaunaBooking.Api.Data;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -10,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Load Connection String
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-logger.LogInformation("Database connection string: {ConnectionString}", connectionString);
 
 // Register EF Core with SQLite
 builder.Services.AddDbContext<SaunaBookingDbContext>(options =>
@@ -74,6 +72,7 @@ var logger = app.Services.GetRequiredService<ILogger<Program>>();
 try
 {
     logger.LogInformation("Starting application...");
+    logger.LogInformation("Database connection string: {ConnectionString}", connectionString);
     logger.LogInformation("Environment: {Environment}", app.Environment.EnvironmentName);
     logger.LogInformation("Allowed Origins: {Origins}", string.Join(", ", allowedOrigins));
 
