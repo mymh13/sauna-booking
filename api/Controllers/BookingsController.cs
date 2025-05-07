@@ -41,6 +41,7 @@ namespace SaunaBooking.Api.Controllers
         {
             Console.WriteLine($"[POST] Received booking: {booking.Date:yyyy-MM-dd} {booking.StartTime} Kind={booking.Date.Kind}");
 
+            booking.Date = DateTime.SpecifyKind(booking.Date, DateTimeKind.Utc);
             booking.Date = booking.Date.Date;
             booking.StartTime = TimeSpan.FromHours(booking.StartTime.Hours); // Snap to full hour
 

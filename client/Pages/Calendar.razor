@@ -240,7 +240,7 @@
         Console.WriteLine($"[Book] Sending booking: Date={selectedDay:yyyy-MM-dd} Kind={selectedDay.Kind}");
         var newBooking = new Booking
         {
-            Date = selectedDay,
+            Date = DateTime.SpecifyKind(selectedDay, DateTimeKind.Utc),
             StartTime = selectedTime,
             Username = username,
             Type = newStatus
