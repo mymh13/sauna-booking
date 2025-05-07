@@ -27,21 +27,38 @@ namespace SaunaBooking.Client.Services
 
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
-            var response = await _http.PostAsJsonAsync("/api/auth/login", request);
-            if (!response.IsSuccessStatusCode)
-                return new LoginResponse { Success = false, Message = "Felaktiga uppgifter." };
-
-            var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-            if (result is { Success: true })
+            try
             {
-                Username = request.Username;
-                Role = result.Role;
-                _token = result.Token;
-                _http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
-                NotifyStateChanged();
-            }
+                Console.WriteLine($"Attempting login for user: {request.Username}");
+                var response = await _http.PostAsJsonAsync("/api/auth/login", request);
+                Console.WriteLine($"Login response status: {response.StatusCode}");
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Login failed. Status: {response.StatusCode}, Content: {errorContent}");
+                    return new LoginResponse { Success = false, Message = "Felaktiga uppgifter." };
+                }
 
-            return result ?? new LoginResponse { Success = false, Message = "Okänt fel." };
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                Console.WriteLine($"Login response: Success={result?.Success}, Role={result?.Role}, HasToken={!string.IsNullOrEmpty(result?.Token)}");
+                
+                if (result is { Success: true })
+                {
+                    Username = request.Username;
+                    Role = result.Role;
+                    _token = result.Token;
+                    _http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+                    NotifyStateChanged();
+                }
+
+                return result ?? new LoginResponse { Success = false, Message = "Okänt fel." };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Login exception: {ex}");
+                return new LoginResponse { Success = false, Message = $"Ett fel uppstod: {ex.Message}" };
+            }
         }
 
         public void Logout()
