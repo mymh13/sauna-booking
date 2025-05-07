@@ -196,6 +196,10 @@ namespace SaunaBooking.Api.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet("test-auth")]
+        public IActionResult TestAuth() => Ok("Authenticated!");
+
         private string GenerateJwtToken(User user)
         {
             var jwtKey = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not found in configuration");
