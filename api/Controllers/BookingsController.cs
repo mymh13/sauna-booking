@@ -89,6 +89,12 @@ namespace SaunaBooking.Api.Controllers
             var currentUser = User.Identity?.Name;
             var isAdmin = User.IsInRole("admin");
 
+            if (currentUser == null && !isAdmin)
+            {
+                Console.WriteLine(">>> [DELETE] Forbidden: No user identity found.");
+                return Forbid("You must be logged in to delete bookings.");
+            }
+
             // Only allow if admin or the user who booked
             if (!isAdmin && !string.Equals(booking.Username, currentUser, StringComparison.OrdinalIgnoreCase))
             {
