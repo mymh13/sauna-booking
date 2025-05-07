@@ -2,7 +2,8 @@
 @using SaunaBooking.Client.Models.DTOs
 @using SaunaBooking.Client.Services
 @using SaunaBooking.Client.Components
-@inject UserManagementService UserManagement
+@using Microsoft.AspNetCore.Authorization
+@inject UserManagementService UserManagementService
 @inject NavigationManager NavigationManager
 @attribute [Authorize(Roles = "admin")]
 
@@ -143,7 +144,7 @@
 
     private async Task LoadUsers()
     {
-        _users = await UserManagement.GetUsersAsync();
+        _users = await UserManagementService.GetUsersAsync();
     }
 
     private void ShowCreateModal()
@@ -172,7 +173,7 @@
     {
         try
         {
-            await UserManagement.CreateUserAsync(_newUser);
+            await UserManagementService.CreateUserAsync(_newUser);
             _showCreateModal = false;
             await LoadUsers();
         }
@@ -187,7 +188,7 @@
     {
         try
         {
-            await UserManagement.UpdateUserAsync(_selectedUser.Id, _updateRequest);
+            await UserManagementService.UpdateUserAsync(_selectedUser.Id, _updateRequest);
             _showEditModal = false;
             await LoadUsers();
         }
@@ -202,7 +203,7 @@
     {
         try
         {
-            await UserManagement.DeleteUserAsync(_selectedUser.Id);
+            await UserManagementService.DeleteUserAsync(_selectedUser.Id);
             _showDeleteModal = false;
             await LoadUsers();
         }
