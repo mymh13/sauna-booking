@@ -74,38 +74,44 @@ namespace SaunaBooking.Api.Controllers
         [HttpDelete("{date}/{startTime}")]
         public async Task<IActionResult> Delete(DateTime date, TimeSpan startTime)
         {
-            Console.WriteLine($">>> [DELETE] Requested date: {date:yyyy-MM-dd} time: {startTime} Kind={date.Kind}");
-
-            var booking = await _dbContext.Bookings
-                .FirstOrDefaultAsync(b => b.Date == date && b.StartTime == startTime);
-
-            if (booking == null)
+            try
             {
-                Console.WriteLine($">>> [DELETE] No match found.");
-                return NotFound();
+                Console.WriteLine($">>> [DELETE] Requested date: {date:yyyy-MM-dd} time: {startTime} Kind={date.Kind}");
+
+                var booking = await _dbContext.Bookings
+                    .FirstOrDefaultAsync(b => b.Date == date && b.StartTime == startTime);
+
+                if (booking == null)
+                {
+                    Console.WriteLine($">>> [DELETE] No match found.");
+                    return NotFound();
+                }
+
+                var currentUser = User.Identity?.Name;
+                var isAdmin = User.IsInRole("admin");
+
+                if (currentUser == null && !isAdmin)
+                {
+                    Console.WriteLine(">>> [DELETE] Forbidden: No user identity found.");
+                    return Forbid("You must be logged in to delete bookings.");
+                }
+
+                if (!isAdmin && !string.Equals(booking.Username, currentUser, StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($">>> [DELETE] Forbidden: User {currentUser} tried to delete booking by {booking.Username}");
+                    return Forbid("You can only delete your own bookings.");
+                }
+
+                Console.WriteLine($">>> [DELETE] Found booking with ID {booking.Id}, deleting.");
+                _dbContext.Bookings.Remove(booking);
+                await _dbContext.SaveChangesAsync();
+                return NoContent();
             }
-
-            // Get current user info from JWT
-            var currentUser = User.Identity?.Name;
-            var isAdmin = User.IsInRole("admin");
-
-            if (currentUser == null && !isAdmin)
+            catch (Exception ex)
             {
-                Console.WriteLine(">>> [DELETE] Forbidden: No user identity found.");
-                return Forbid("You must be logged in to delete bookings.");
+                Console.WriteLine($">>> [DELETE] Exception: {ex}");
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
-
-            // Only allow if admin or the user who booked
-            if (!isAdmin && !string.Equals(booking.Username, currentUser, StringComparison.OrdinalIgnoreCase))
-            {
-                Console.WriteLine($">>> [DELETE] Forbidden: User {currentUser} tried to delete booking by {booking.Username}");
-                return Forbid("You can only delete your own bookings.");
-            }
-
-            Console.WriteLine($">>> [DELETE] Found booking with ID {booking.Id}, deleting.");
-            _dbContext.Bookings.Remove(booking);
-            await _dbContext.SaveChangesAsync();
-            return NoContent();
         }
     }
 }
