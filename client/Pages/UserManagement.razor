@@ -1,0 +1,228 @@
+@page "/admin/users"
+@using SaunaBooking.Client.Services
+@using SaunaBooking.Client.Models
+@inject UserSessionService Session
+@inject UserManagementService UserManagement
+@inject NavigationManager Navigation
+
+<h1>Användarhantering</h1>
+
+@if (Session.Role != "admin")
+{
+    <div class="alert alert-danger">
+        Du har inte behörighet att se denna sida.
+    </div>
+}
+else
+{
+    <div class="user-management">
+        <div class="mb-4">
+            <button class="btn btn-primary" @onclick="() => ShowCreateUserModal()">Skapa ny användare</button>
+        </div>
+
+        @if (users == null)
+        {
+            <p>Laddar användare...</p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Användarnamn</th>
+                        <th>Roll</th>
+                        <th>Åtgärder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in users)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.Username</td>
+                            <td>@user.Role</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning me-2" @onclick="() => ShowEditUserModal(user)">Redigera</button>
+                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteUser(user.Id)">Ta bort</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    @if (showCreateModal)
+    {
+        <div class="modal fade show" style="display: block;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Skapa ny användare</h5>
+                        <button type="button" class="btn-close" @onclick="CloseCreateModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <EditForm Model="newUser" OnValidSubmit="CreateUser">
+                            <DataAnnotationsValidator />
+                            <div class="mb-3">
+                                <label class="form-label">Användarnamn</label>
+                                <InputText @bind-Value="newUser.Username" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Lösenord</label>
+                                <InputText type="password" @bind-Value="newUser.Password" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Roll</label>
+                                <InputSelect @bind-Value="newUser.Role" class="form-select">
+                                    <option value="user">Användare</option>
+                                    <option value="admin">Administratör</option>
+                                </InputSelect>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Skapa</button>
+                            <button type="button" class="btn btn-secondary" @onclick="CloseCreateModal">Avbryt</button>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
+
+    @if (showEditModal && selectedUser != null)
+    {
+        <div class="modal fade show" style="display: block;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Redigera användare</h5>
+                        <button type="button" class="btn-close" @onclick="CloseEditModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <EditForm Model="editUser" OnValidSubmit="UpdateUser">
+                            <DataAnnotationsValidator />
+                            <div class="mb-3">
+                                <label class="form-label">Lösenord (lämna tomt för att behålla)</label>
+                                <InputText type="password" @bind-Value="editUser.Password" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Roll</label>
+                                <InputSelect @bind-Value="editUser.Role" class="form-select">
+                                    <option value="user">Användare</option>
+                                    <option value="admin">Administratör</option>
+                                </InputSelect>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Spara</button>
+                            <button type="button" class="btn btn-secondary" @onclick="CloseEditModal">Avbryt</button>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
+}
+
+@code {
+    private List<UserDto>? users;
+    private bool showCreateModal;
+    private bool showEditModal;
+    private UserDto? selectedUser;
+    private CreateUserRequest newUser = new();
+    private UpdateUserRequest editUser = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Session.Role == "admin")
+        {
+            await LoadUsers();
+        }
+    }
+
+    private async Task LoadUsers()
+    {
+        try
+        {
+            users = await UserManagement.GetUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            // Handle error
+            Console.WriteLine($"Error loading users: {ex.Message}");
+        }
+    }
+
+    private void ShowCreateUserModal()
+    {
+        newUser = new CreateUserRequest();
+        showCreateModal = true;
+    }
+
+    private void CloseCreateModal()
+    {
+        showCreateModal = false;
+    }
+
+    private void ShowEditUserModal(UserDto user)
+    {
+        selectedUser = user;
+        editUser = new UpdateUserRequest { Role = user.Role };
+        showEditModal = true;
+    }
+
+    private void CloseEditModal()
+    {
+        showEditModal = false;
+        selectedUser = null;
+    }
+
+    private async Task CreateUser()
+    {
+        try
+        {
+            await UserManagement.CreateUserAsync(newUser);
+            showCreateModal = false;
+            await LoadUsers();
+        }
+        catch (Exception ex)
+        {
+            // Handle error
+            Console.WriteLine($"Error creating user: {ex.Message}");
+        }
+    }
+
+    private async Task UpdateUser()
+    {
+        if (selectedUser == null) return;
+
+        try
+        {
+            await UserManagement.UpdateUserAsync(selectedUser.Id, editUser);
+            showEditModal = false;
+            await LoadUsers();
+        }
+        catch (Exception ex)
+        {
+            // Handle error
+            Console.WriteLine($"Error updating user: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteUser(int id)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", "Är du säker på att du vill ta bort denna användare?"))
+            return;
+
+        try
+        {
+            await UserManagement.DeleteUserAsync(id);
+            await LoadUsers();
+        }
+        catch (Exception ex)
+        {
+            // Handle error
+            Console.WriteLine($"Error deleting user: {ex.Message}");
+        }
+    }
+} 

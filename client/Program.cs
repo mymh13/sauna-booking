@@ -9,5 +9,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://sauna-api.mymh.dev/") });
 builder.Services.AddScoped<UserSessionService>();
+builder.Services.AddScoped<UserManagementService>();
 
 await builder.Build().RunAsync();

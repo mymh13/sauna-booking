@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SaunaBooking.Api.Data;
+using Microsoft.AspNetCore.Authorization;
 
 //  Create a builder
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,13 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Register EF Core with SQLite
 builder.Services.AddDbContext<SaunaBookingDbContext>(options =>
     options.UseSqlite(connectionString));
+
+// Add Authorization services
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy =>
+        policy.RequireRole("admin"));
+});
 
 // Detect allowed origins dynamically
 string[] allowedOrigins = builder.Environment.IsDevelopment()
@@ -43,6 +51,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseRouting();
 app.UseCors("MyCorsPolicy");
+app.UseAuthorization(); // Add authorization middleware
 app.MapControllers();
 
 // Optional: test endpoint
