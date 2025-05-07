@@ -62,7 +62,10 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AllowAnonymousFilter());
+});
 
 // Build the app
 var app = builder.Build();
@@ -131,6 +134,8 @@ try
         var migrations = await db.Database.GetAppliedMigrationsAsync();
         return Results.Ok(migrations);
     });
+
+    app.MapGet("/test-cors", () => Results.StatusCode(403)).RequireCors("MyCorsPolicy");
 
     app.Run();
 }
