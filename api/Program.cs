@@ -10,10 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Load Connection String
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+logger.LogInformation("Database connection string: {ConnectionString}", connectionString);
 
 // Register EF Core with SQLite
 builder.Services.AddDbContext<SaunaBookingDbContext>(options =>
-    options.UseSqlite(connectionString));
+{
+    options.UseSqlite(connectionString);
+    options.LogTo(Console.WriteLine, LogLevel.Information);
+});
 
 // Add JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not found in configuration");
