@@ -184,8 +184,10 @@
     {
         AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
         AllBookings = AllBookings.Select(b => {
+            // Treat all incoming dates as UTC
+            b.Date = DateTime.SpecifyKind(b.Date, DateTimeKind.Utc);
             Console.WriteLine($"[Booking] Received from server: Date={b.Date:yyyy-MM-dd} Kind={b.Date.Kind}");
-            b.Date = b.Date.Date;
+            b.Date = b.Date.ToLocalTime().Date; // Now it's local, and .Date truncates the time
             return b;
         }).ToList();
     }
