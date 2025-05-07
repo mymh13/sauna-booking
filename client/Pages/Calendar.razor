@@ -218,8 +218,15 @@
                 var response = await Http.DeleteAsync($"/bookings/{dateStr}/{timeStr}");
                 if (response.IsSuccessStatusCode)
                 {
-                    // Always refresh from server to ensure consistency
                     await RefreshBookingsAsync();
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    bookingMessage = "Du kan bara ta bort dina egna bokningar.";
+                }
+                else
+                {
+                    bookingMessage = "Ett fel uppstod vid borttagning av bokningen.";
                 }
             }
             return;
