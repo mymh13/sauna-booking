@@ -67,56 +67,51 @@ var app = builder.Build();
 
 // Add startup logging
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
-logger.LogInformation("Starting application...");
-logger.LogInformation("Environment: {Environment}", app.Environment.EnvironmentName);
-logger.LogInformation("Allowed Origins: {Origins}", string.Join(", ", allowedOrigins));
-
-// Apply any pending migrations at startup
-using (var scope = app.Services.CreateScope())
+try
 {
-    var db = scope.ServiceProvider.GetRequiredService<SaunaBookingDbContext>();
-    logger.LogInformation("Applying database migrations...");
-    db.Database.Migrate();
-    logger.LogInformation("Database migrations applied successfully");
+    logger.LogInformation("Starting application...");
+    logger.LogInformation("Environment: {Environment}", app.Environment.EnvironmentName);
+    logger.LogInformation("Allowed Origins: {Origins}", string.Join(", ", allowedOrigins));
+
+    // Log JWT configuration
+    logger.LogInformation("JWT Configuration - Issuer: {Issuer}, Audience: {Audience}", 
+        builder.Configuration["Jwt:Issuer"],
+        builder.Configuration["Jwt:Audience"]);
+
+    // Apply any pending migrations at startup
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<SaunaBookingDbContext>();
+        logger.LogInformation("Applying database migrations...");
+        db.Database.Migrate();
+        logger.LogInformation("Database migrations applied successfully");
+    }
+
+    // Configure middleware pipeline
+    app.UseRouting();
+    logger.LogInformation("Routing middleware configured");
+
+    app.UseCors("MyCorsPolicy");
+    logger.LogInformation("CORS middleware configured");
+
+    app.UseAuthentication();
+    logger.LogInformation("Authentication middleware configured");
+
+    app.UseAuthorization();
+    logger.LogInformation("Authorization middleware configured");
+
+    app.MapControllers();
+    logger.LogInformation("Controllers mapped");
+
+    // Optional: test endpoint
+    app.MapGet("/", () => Results.Ok("Hello World!"));
+    app.MapGet("/test", () => "API OK");
+    logger.LogInformation("Test endpoints configured");
+
+    app.Run();
 }
-
-// Configure middleware pipeline
-app.UseRouting();
-app.UseCors("MyCorsPolicy"); // CORS must be after UseRouting but before UseAuthentication
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-
-// Optional: test endpoint
-app.MapGet("/", () => Results.Ok("Hello World!"));
-app.MapGet("/test", () => "API OK");
-
-app.MapPost("/debug-booking", async (HttpRequest request) =>
+catch (Exception ex)
 {
-    using var reader = new StreamReader(request.Body);
-    var body = await reader.ReadToEndAsync();
-    Console.WriteLine("Raw body: " + body);
-    return Results.Ok("Debug endpoint received something");
-});
-
-app.MapGet("/db-check", async (SaunaBookingDbContext db) =>
-{
-    try
-    {
-        var count = await db.Bookings.CountAsync();
-        return Results.Ok($"Bookings table has {count} rows.");
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem("DB ERROR: " + ex.Message);
-    }
-});
-
-app.MapGet("/migrations", async (SaunaBookingDbContext db) =>
-{
-    var migrations = await db.Database.GetAppliedMigrationsAsync();
-    return Results.Ok(migrations);
-});
-
-app.Run();
+    logger.LogError(ex, "An error occurred during application startup");
+    throw; // Re-throw to ensure the application fails fast
+}
