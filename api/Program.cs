@@ -54,7 +54,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .WithExposedHeaders("Content-Disposition");
     });
 });
 
@@ -64,17 +65,27 @@ builder.Services.AddControllers();
 // Build the app
 var app = builder.Build();
 
+// Add startup logging
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Starting application...");
+logger.LogInformation("Environment: {Environment}", app.Environment.EnvironmentName);
+logger.LogInformation("Allowed Origins: {Origins}", string.Join(", ", allowedOrigins));
+
 // Apply any pending migrations at startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<SaunaBookingDbContext>();
+    logger.LogInformation("Applying database migrations...");
     db.Database.Migrate();
+    logger.LogInformation("Database migrations applied successfully");
 }
 
+// Configure middleware pipeline
 app.UseRouting();
-app.UseCors("MyCorsPolicy");
-app.UseAuthentication(); // Add authentication middleware
-app.UseAuthorization(); // Add authorization middleware
+app.UseCors("MyCorsPolicy"); // CORS must be after UseRouting but before UseAuthentication
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 // Optional: test endpoint
