@@ -39,7 +39,7 @@ namespace SaunaBooking.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] Booking booking)
         {
-            Console.WriteLine($"Received booking from {booking.Username} on {booking.Date} at {booking.StartTime}");
+            Console.WriteLine($"[POST] Received booking: {booking.Date:yyyy-MM-dd} {booking.StartTime}");
 
             booking.Date = booking.Date.Date;
             booking.StartTime = TimeSpan.FromHours(booking.StartTime.Hours); // Snap to full hour
@@ -65,6 +65,7 @@ namespace SaunaBooking.Api.Controllers
             await _dbContext.SaveChangesAsync();
 
             Console.WriteLine("Booking saved.");
+            Console.WriteLine($"[POST] Stored booking: {booking.Date:yyyy-MM-dd} {booking.StartTime}");
             return CreatedAtAction(nameof(GetBookings), new { booking.Date, booking.StartTime }, booking);
         }
 
@@ -81,6 +82,17 @@ namespace SaunaBooking.Api.Controllers
             {
                 Console.WriteLine($">>> [DELETE] No match found.");
                 return NotFound();
+            }
+
+            // Get current user info from JWT
+            var currentUser = User.Identity?.Name;
+            var isAdmin = User.IsInRole("admin");
+
+            // Only allow if admin or the user who booked
+            if (!isAdmin && !string.Equals(booking.Username, currentUser, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine($">>> [DELETE] Forbidden: User {currentUser} tried to delete booking by {booking.Username}");
+                return Forbid("You can only delete your own bookings.");
             }
 
             Console.WriteLine($">>> [DELETE] Found booking with ID {booking.Id}, deleting.");
