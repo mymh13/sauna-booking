@@ -68,7 +68,8 @@ sauna-booking/                          Root folder of the project/repository (m
 │
 ├── client/                             Blazor WASM project ("frontend")
 │   ├── Components/
-│   │   └── BookingPopup.razor          TODO:
+│   │   ├── BookingPopup.razor          TODO:
+│   │   └── Modal.razor                 TODO:
 │   ├── Layout/
 │   │   ├── MainLayout.razor            Root layout wrapper including header/footer/navigation
 │   │   ├── MainLayout.razor.css        Styling for the main layout and theme switching
