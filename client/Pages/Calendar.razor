@@ -61,7 +61,8 @@
 <BookingPopup 
     Visible="showPopup"
     CurrentStatus="selectedStatus"
-    OnStatusSelected="HandlePopupResult" />
+    OnStatusSelected="HandlePopupResult"
+    UserRole="@userSessionService.Role" />
 
 @code {
     private DateTime Today => DateTime.Now.Date;

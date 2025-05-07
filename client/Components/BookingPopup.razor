@@ -4,6 +4,7 @@
     [Parameter] public bool Visible { get; set; }
     [Parameter] public string CurrentStatus { get; set; } = "Free";
     [Parameter] public EventCallback<string?> OnStatusSelected { get; set; }
+    [Parameter] public string UserRole { get; set; } = "user";
 
     private string selectedStatus = "Private";
 
@@ -32,7 +33,10 @@
             <select @bind="selectedStatus" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;">
                 <option value="Private">Privat</option>
                 <option value="Open">Öppen</option>
-                <option value="Blocked">Blockerad</option>
+                @if (UserRole == "admin")
+                {
+                    <option value="Blocked">Blockerad</option>
+                }
             </select>
 
             <div style="display: flex; justify-content: space-between; gap: 0.5rem;">

@@ -54,6 +54,13 @@ namespace SaunaBooking.Api.Controllers
                 return Conflict("Slot already booked.");
             }
 
+            // May need to get the user's role from the JWT claims
+            var isAdmin = User.IsInRole("admin");
+            if (booking.Type == "Blocked" && !isAdmin)
+            {
+                return Forbid("Only admins can book 'Blockerad' slots.");
+            }
+
             _dbContext.Bookings.Add(booking);
             await _dbContext.SaveChangesAsync();
 
