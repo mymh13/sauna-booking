@@ -62,10 +62,7 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AllowAnonymousFilter());
-});
+builder.Services.AddControllers();
 
 // Build the app
 var app = builder.Build();
