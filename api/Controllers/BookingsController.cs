@@ -39,7 +39,7 @@ namespace SaunaBooking.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] Booking booking)
         {
-            Console.WriteLine($"[POST] Received booking: {booking.Date:yyyy-MM-dd} {booking.StartTime}");
+            Console.WriteLine($"[POST] Received booking: {booking.Date:yyyy-MM-dd} {booking.StartTime} Kind={booking.Date.Kind}");
 
             booking.Date = booking.Date.Date;
             booking.StartTime = TimeSpan.FromHours(booking.StartTime.Hours); // Snap to full hour
@@ -65,7 +65,7 @@ namespace SaunaBooking.Api.Controllers
             await _dbContext.SaveChangesAsync();
 
             Console.WriteLine("Booking saved.");
-            Console.WriteLine($"[POST] Stored booking: {booking.Date:yyyy-MM-dd} {booking.StartTime}");
+            Console.WriteLine($"[POST] Stored booking: {booking.Date:yyyy-MM-dd} {booking.StartTime} Kind={booking.Date.Kind}");
             return CreatedAtAction(nameof(GetBookings), new { booking.Date, booking.StartTime }, booking);
         }
 
@@ -73,7 +73,7 @@ namespace SaunaBooking.Api.Controllers
         [HttpDelete("{date}/{startTime}")]
         public async Task<IActionResult> Delete(DateTime date, TimeSpan startTime)
         {
-            Console.WriteLine($">>> [DELETE] Requested date: {date:yyyy-MM-dd} time: {startTime}");
+            Console.WriteLine($">>> [DELETE] Requested date: {date:yyyy-MM-dd} time: {startTime} Kind={date.Kind}");
 
             var booking = await _dbContext.Bookings
                 .FirstOrDefaultAsync(b => b.Date == date && b.StartTime == startTime);

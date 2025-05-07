@@ -183,7 +183,11 @@
     private async Task RefreshBookingsAsync()
     {
         AllBookings = await Http.GetFromJsonAsync<List<Booking>>("/bookings") ?? new();
-        AllBookings = AllBookings.Select(b => { b.Date = b.Date.Date; return b; }).ToList();
+        AllBookings = AllBookings.Select(b => {
+            Console.WriteLine($"[Booking] Received from server: Date={b.Date:yyyy-MM-dd} Kind={b.Date.Kind}");
+            b.Date = b.Date.Date;
+            return b;
+        }).ToList();
     }
 
     private async Task HandlePopupResult(string? newStatus)
@@ -201,7 +205,7 @@
         // Unbook (status is Free)
         if (newStatus == "Free")
         {
-            Console.WriteLine($"[Unbook] Target = {selectedDay:yyyy-MM-dd} {selectedTime}");
+            Console.WriteLine($"[Unbook] Target = {selectedDay:yyyy-MM-dd} {selectedTime} Kind={selectedDay.Kind}");
             
             // Refresh first to ensure we have latest data
             await RefreshBookingsAsync();
@@ -233,6 +237,7 @@
         }
 
         // Book or rebook
+        Console.WriteLine($"[Book] Sending booking: Date={selectedDay:yyyy-MM-dd} Kind={selectedDay.Kind}");
         var newBooking = new Booking
         {
             Date = selectedDay,
