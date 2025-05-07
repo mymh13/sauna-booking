@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaunaBooking.Api.Models;
+using SaunaBooking.Api.Models.DTOs;
 using SaunaBooking.Api.Data;
 using System.Security.Cryptography;
 using System.Text;
