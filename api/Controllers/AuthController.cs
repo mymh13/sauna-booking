@@ -35,6 +35,8 @@ namespace SaunaBooking.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("Login attempt for user: {Username}", request.Username);
+                
                 var user = await _dbContext.Users
                     .FirstOrDefaultAsync(u => u.Username == request.Username);
 
@@ -45,6 +47,8 @@ namespace SaunaBooking.Api.Controllers
                 }
 
                 string hashedPassword = HashPassword(request.Password);
+                _logger.LogInformation("Password comparison - Stored: {StoredHash}, Provided: {ProvidedHash}", 
+                    user.PasswordHash, hashedPassword);
 
                 if (user.PasswordHash != hashedPassword)
                 {
@@ -53,8 +57,8 @@ namespace SaunaBooking.Api.Controllers
                 }
 
                 var token = GenerateJwtToken(user);
-
                 _logger.LogInformation("User logged in successfully: {Username}", user.Username);
+                
                 return Ok(new LoginResponse
                 {
                     Success = true,
