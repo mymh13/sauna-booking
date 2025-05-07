@@ -108,6 +108,27 @@ try
     app.MapGet("/test", () => "API OK");
     logger.LogInformation("Test endpoints configured");
 
+    // Health check endpoints
+    app.MapGet("/db-check", async (SaunaBookingDbContext db) =>
+    {
+        try
+        {
+            var count = await db.Bookings.CountAsync();
+            return Results.Ok($"Bookings table has {count} rows.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Database health check failed");
+            return Results.Problem("DB ERROR: " + ex.Message);
+        }
+    });
+
+    app.MapGet("/migrations", async (SaunaBookingDbContext db) =>
+    {
+        var migrations = await db.Database.GetAppliedMigrationsAsync();
+        return Results.Ok(migrations);
+    });
+
     app.Run();
 }
 catch (Exception ex)
