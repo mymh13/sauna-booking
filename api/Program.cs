@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using SaunaBooking.Api.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 //  Create a builder
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +15,26 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<SaunaBookingDbContext>(options =>
     options.UseSqlite(connectionString));
 
+// Add JWT Authentication
+var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not found in configuration");
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("JWT Issuer not found in configuration");
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? throw new InvalidOperationException("JWT Audience not found in configuration");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+
 // Add Authorization services
 builder.Services.AddAuthorization(options =>
 {
@@ -22,7 +45,7 @@ builder.Services.AddAuthorization(options =>
 // Detect allowed origins dynamically
 string[] allowedOrigins = builder.Environment.IsDevelopment()
     ? new[] { "https://localhost:5067" }
-    : new[] { "https://mymh.dev", "https://www.mymh.dev" };
+    : new[] { "https://mymh.dev", "https://www.mymh.dev", "https://sauna.mymh.dev" };
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -51,6 +74,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseRouting();
 app.UseCors("MyCorsPolicy");
+app.UseAuthentication(); // Add authentication middleware
 app.UseAuthorization(); // Add authorization middleware
 app.MapControllers();
 
