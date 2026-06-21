@@ -26,15 +26,11 @@ jobs:
     - name: Publish Blazor WASM
       run: dotnet publish ./client/client.csproj -c Release -o ./client_publish /p:BaseHref="/sauna/"
 
-    - name: Install lftp if needed
-      run: |
-        if ! command -v lftp &> /dev/null; then
-          sudo apt-get update && sudo apt-get install -y lftp
-        fi
+    - name: Add SSH key for Hetzner
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.HETZNER_DEPLOY_KEY }}
 
-    - name: Upload frontend to Loopia FTP
+    - name: Deploy frontend to Hetzner
       run: |
-        lftp -c "
-          open -u ${{ secrets.LOOPIA_FTP_USER }},${{ secrets.LOOPIA_FTP_PASS }} ${{ secrets.LOOPIA_FTP_HOST }};
-          mirror -R ./client_publish/wwwroot mymh.dev/public_html/sauna;
-          quit"
+        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./client_publish/wwwroot/ saunadeploy@${{ secrets.HETZNER_HOST }}:/var/www/mymh.dev/public_html/sauna/

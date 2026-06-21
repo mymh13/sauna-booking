@@ -1,24 +1,22 @@
 # Sauna Booking
 
 This project is a lightweight, **low-carbon footprint** web application for booking a sauna (bastuflotte), designed to prioritize simplicity and energy efficiency.  
-It consists of a **.NET 9 Web API backend** and a **Blazor WebAssembly frontend**, hosted separately for security, performance and cost optimization.
+It consists of a **.NET 9 Web API backend** and a **Blazor WebAssembly frontend**, deployed separately to support security, performance, and cost efficiency.
 
 ## Key technologies and architecture
 - **Backend:** ASP.NET Core 9 Web API, Entity Framework Core (EF Core), SQLite for persistent storage
 - **Frontend:** Blazor WebAssembly (WASM), Bootstrap 5 for minimal UI styling
 - **Hosting:** 
-  - Backend API deployed on an **EU-based Cloud virtual machine (VM)** running Linux
-  - Reverse proxy and load balancing handled via **Caddy Server** (TLS automated)
-  - Frontend static assets deployed via **FTP** to a separate web host
+  - Backend API deployed on an **EU-based Linux VM**
+  - Reverse proxy and TLS termination handled via **Caddy Server** with automated certificate management
+  - Frontend static assets deployed to a separate EU-based VM over **SSH/rsync**
 - **Security:** 
   - HTTPS with automatic TLS provisioning by Caddy
   - CORS configured for secure API communication
   - LocalStorage used for lightweight client-side session persistence
 - **Deployment:** 
   - GitHub Actions CI/CD pipeline configured from a **monorepo** (`/api/` + `/client/`)
-  - **Dual deployment pipelines**:  
-    - `rsync` over SSH for backend code deployment to VM  
-    - `lftp` mirror upload for frontend Blazor static files via FTP
+  - Automated build-and-deploy workflows for backend and frontend over SSH/rsync
 - **Project structure:** 
   - Clean separation between backend and frontend layers, with minimal coupling
 - **Environment Configuration:** 
@@ -39,7 +37,7 @@ Project file and directory structure:
 sauna-booking/                          Root folder of the project/repository (monorepo)
 ├── .github/
 │   └── workflows/
-│       └── deploy.yaml                 GitHub Actions workflow to build and deploy backend (Cloud) and frontend (FTP)
+│       └── deploy*.yaml                GitHub Actions workflows for build and deploy automation
 │
 ├── api/                                .NET API ("backend")
 │   ├── .local-data/                    Local development only: not tracked by Git
@@ -109,7 +107,7 @@ sauna-booking/                          Root folder of the project/repository (m
 │   └── Program.cs                      Startup configuration for the Blazor frontend
 │
 ├── client_publish/                     Local output folder for frontend publishing (not tracked by Git)
-│   └── wwwroot/                        Published frontend assets (FTP uploaded to Loopia)
+│   └── wwwroot/                        Published frontend assets used by the deploy workflow
 │
 ├── .gitignore                          Git rules for ignoring binaries, temp files, secrets, etc.
 ├── LICENSE                             Open-source license for the project
