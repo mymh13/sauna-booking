@@ -1,0 +1,33 @@
+name: Deploy V2 Frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v2/**'
+      - '.github/workflows/deploy_v2.yaml'
+
+jobs:
+  deploy-v2:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up .NET 9 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Publish v2 app
+      run: dotnet publish ./v2/SaunaBookingV2.csproj -c Release -o ./v2_publish
+
+    - name: Add SSH key for Hetzner
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.HETZNER_DEPLOY_KEY }}
+
+    - name: Deploy v2 to Hetzner
+      run: |
+        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./v2_publish/ saunadeploy@${{ secrets.HETZNER_HOST }}:/home/saunadeploy/v2/publish/

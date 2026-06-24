@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/sauna/v2/" />
+    <title>Sauna Booking v2</title>
+    <link rel="stylesheet" href="css/site.css" />
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+</head>
+
+<body class="sb-shell">
+    <div id="site-nav" hx-get="fragments/nav" hx-trigger="load" hx-swap="outerHTML">
+        <header class="sb-topbar">
+            <div class="container sb-topbar-inner">
+                <div>
+                    <div class="sb-eyebrow">Sauna Booking v2</div>
+                    <a class="sb-brand" href="/sauna/v2/">Dyviksudds bastuflotte</a>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <main class="container py-4">
+        <section class="sb-hero card sb-card">
+            <div class="card-body p-4 p-md-5">
+                <div class="sb-eyebrow mb-2">HTMX frontend</div>
+                <h1 class="display-5 fw-semibold">En enklare bokningsupplevelse för bastuflotten</h1>
+                <p class="lead mt-3 mb-4">
+                    Den här versionen är byggd för att vara mobil först, lätt att förstå och lätt att bygga vidare på.
+                    Målet är att ersätta popup-beteenden med tydliga, serverdrivna flöden.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn sb-btn-primary" href="calendar.html">Öppna kalendern</a>
+                    <a class="btn btn-outline-light" href="login.html">Logga in</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="row g-3 mt-3">
+            <div class="col-md-4">
+                <div class="card sb-card h-100">
+                    <div class="card-body">
+                        <h2 class="h5">Mobile first</h2>
+                        <p class="mb-0">Primärt fokus på smartphones, med en tydlig desktop-upplevelse som följer med
+                            naturligt.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card sb-card h-100">
+                    <div class="card-body">
+                        <h2 class="h5">HTMX-flöden</h2>
+                        <p class="mb-0">Formulär och deluppdateringar ersätter popup-fönster och gör gränssnittet
+                            enklare att underhålla.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card sb-card h-100">
+                    <div class="card-body">
+                        <h2 class="h5">Redo för containerisering</h2>
+                        <p class="mb-0">Projektet är upplagt som en separat app med tydliga gränser inför framtida
+                            Kubernetes-migrering.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
